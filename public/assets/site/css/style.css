@@ -259,7 +259,7 @@ NOTE: This is main stylesheet of template, This file contains the styling for th
   bottom: -31px;
   border-radius: 5px;
   display: none;
-  
+
 }
 .time-line-table .line{
   position: absolute;
@@ -402,7 +402,7 @@ NOTE: This is main stylesheet of template, This file contains the styling for th
   top: 50%;
   transform: translateY(-50%);
   border-radius: 100%;
-  
+
 }
 .banner .carousel-control-prev{
   left: 10px;
@@ -975,7 +975,7 @@ body.rtl .img-side img {right: auto; left: 0;}
 .isotope-filters  button.active, .isotope-filters  button:hover { background: var(--primaryColor); color: #fff; border-color: var(--primaryColor); }
 .isotope-filters  button+button { margin-left: 10px; }
 .isotope, .masonry { margin: 0 -15px 0 0; }
-.isotope.full-screen, 
+.isotope.full-screen,
 .masonry.full-screen { margin: 0; }
 .isotope.full-screen.columns-2 .grid-item,
 .isotope.full-screen.columns-3 .grid-item,
