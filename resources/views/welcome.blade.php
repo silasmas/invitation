@@ -79,7 +79,7 @@
               </div>
 
               <!-- Button trigger modal -->
-              <button type="button" class="btn rsvp-btn mt-10" data-bs-toggle="modal" data-bs-target="#exampleModal">RSVP</button>
+              <button type="button" class="btn rsvp-btn mt-10" data-bs-toggle="modal" data-bs-target="#exampleModal">Confirmez votre présence</button>
               <!-- Modal -->
               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
