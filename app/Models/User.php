@@ -45,9 +45,13 @@ class User extends Authenticatable
 
 	public function event()
 	{
-		
+
 		return $this->belongsTo(\App\Models\Event::class);
-	
+
 	}
+    public function canAccessFilament(): bool
+    {
+        return true; // <--- pour autoriser tout le monde (à sécuriser ensuite)
+    }
 
 }
