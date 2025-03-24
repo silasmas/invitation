@@ -2,6 +2,7 @@
 
 use App\Models\ShortLink;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\InvitationController;
 
@@ -34,3 +35,8 @@ Route::post('/invitations/accept', [InvitationController::class, 'accept']);
 Route::post('/invitations/{invitation}/decline', [InvitationController::class, 'decline']);
 Route::post('/invitations/{invitation}/close', [InvitationController::class, 'close']);
 Route::get('/invitations/{invitation}/download-qrcode', [QRCodeController::class, 'downloadQrCode']);
+
+Route::get('/clear-cache', function () {
+    Artisan::call('optimize:clear');
+    return 'Cache cleared';
+});
