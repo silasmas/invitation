@@ -2,35 +2,72 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MessageResource\Pages;
-use App\Filament\Resources\MessageResource\RelationManagers;
-use App\Models\Message;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Message;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\MessageResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\MessageResource\RelationManagers;
 
 class MessageResource extends Resource
 {
     protected static ?string $model = Message::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?int $navigationSort = 6;
+    public static function getLabel(): string
+    {
+        return 'Message';
+    }
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('titre')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('active')
-                    ->required(),
+                Group::make([
+                    Section::make("Formulaire")->schema([
+                    Select::make('guest_id')
+                            ->label(label: 'Invité')
+                            ->searchable()
+                            ->columnSpan(6)
+                            ->preload()
+                            ->relationship('guests', 'nom'),
+                        Select::make('event_id')
+                            ->label(label: 'Evenement')
+                            ->searchable()
+                            ->columnSpan(6)
+                            ->preload()
+                            ->relationship('events', 'nom'),
+                            RichEditor::make('message')
+                            ->label(label: 'Message')
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->columnSpanFull(),
+                    ])->columnS(12),
+                    ])->columnSpanFull(),
             ]);
     }
 
@@ -38,10 +75,6 @@ class MessageResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('titre')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('active')
-                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -50,6 +83,12 @@ class MessageResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('event_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('guest_id')
+                    ->numeric()
+                    ->sortable(),
             ])
             ->filters([
                 //

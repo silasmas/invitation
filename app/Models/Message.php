@@ -9,5 +9,21 @@ class Message extends Model
 {
     use HasFactory;
 
-	protected $fillable = ['titre', 'content', 'active'];
+	public function events()
+	{
+
+		return $this->belongsTo(\App\Models\Event::class);
+
+	}
+
+
+	public function guests()
+	{
+
+		return $this->belongsTo(\App\Models\Guest::class);
+
+	}
+
+
+	protected $guarded = [];
 }
