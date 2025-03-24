@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'broadcasting' => [
+    'broadcasting'            => [
 
         // 'echo' => [
         //     'broadcaster' => 'pusher',
@@ -30,9 +30,17 @@ return [
         // ],
 
     ],
-'pages' => [
-    \App\Filament\Pages\WhatsAppLinks::class,
-],
+    'pages'                   => [
+        \App\Filament\Pages\WhatsAppLinks::class,
+    ],
+    'auth'                    => [
+        'guard'      => 'web',
+        'pages'      => [
+            'login' => \Filament\Http\Livewire\Auth\Login::class,
+        ],
+        'middleware' => ['web', 'auth'],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
@@ -57,7 +65,7 @@ return [
     |
     */
 
-    'assets_path' => null,
+    'assets_path'             => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +79,7 @@ return [
     |
     */
 
-    'cache_path' => base_path('bootstrap/cache/filament'),
+    'cache_path'              => base_path('bootstrap/cache/filament'),
 
     /*
     |--------------------------------------------------------------------------
@@ -86,6 +94,6 @@ return [
     |
     */
 
-    'livewire_loading_delay' => 'default',
+    'livewire_loading_delay'  => 'default',
 
 ];
