@@ -35,6 +35,7 @@ return [
     ],
     'auth'                    => [
         'guard'      => 'web',
+        'user' => App\Models\User::class, // 👈 ajoute ceci !
         'pages'      => [
             'login' => \Filament\Http\Livewire\Auth\Login::class,
         ],

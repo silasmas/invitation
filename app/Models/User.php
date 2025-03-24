@@ -51,6 +51,7 @@ class User extends Authenticatable
 	}
     public function canAccessFilament(): bool
     {
+        dd('accessing panel'); // si tu vois ce texte, la méthode est bien utilisée
         return true; // <--- pour autoriser tout le monde (à sécuriser ensuite)
     }
 
