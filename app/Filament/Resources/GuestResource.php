@@ -1,24 +1,25 @@
 <?php
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\GuestResource\Pages;
-use App\Imports\GuestsImport;
-use App\Models\Guest;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Guest;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Imports\GuestsImport;
+use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Log;
+use Filament\Forms\Components\Group;
+use Maatwebsite\Excel\Facades\Excel;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
+use App\Filament\Resources\GuestResource\Pages;
 
 class GuestResource extends Resource
 {
@@ -161,11 +162,17 @@ class GuestResource extends Resource
 
                         // 🔹 Récupérer l'ID de l'événement depuis le formulaire
                         $eventId = $data['event_id'] ?? null;
+                        $fileInput = $data['file'] ?? null;
+                        Log::info('Fichier reçu : ' . print_r($fileInput, true));
                         Log::info('ID :' . $eventId); // Vérifier si l'ID est récupéré
                                                       // Correction du chemin du fichier
-                        $filePath = storage_path('app/uploads/imports/' . basename($data['file']));
+                        // $filePath = storage_path('app/uploads/imports/' . basename($data['file']));
 
-                        // Excel::import(new GuestsImport($eventId), storage_path('app/' . $data['file']));
+                        if (is_string($fileInput)) {
+                            $filePath = Storage::disk('local')->path($fileInput);
+                        } elseif ($fileInput instanceof \Illuminate\Http\UploadedFile) {
+                            $filePath = $fileInput->getRealPath();
+                        }
                         // Vérification si le fichier existe avant d'importer
                         if (! file_exists($filePath)) {
                             Log::error("Fichier introuvable : {$filePath}");
