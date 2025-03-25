@@ -3,14 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -49,10 +50,9 @@ class User extends Authenticatable
 		return $this->belongsTo(\App\Models\Event::class);
 
 	}
-    public function canAccessFilament(): bool
+    public static function canAccess(): bool
     {
-        dd('accessing panel'); // si tu vois ce texte, la méthode est bien utilisée
-        return true; // <--- pour autoriser tout le monde (à sécuriser ensuite)
+        return auth()->user()?->hasPermissionTo('voir dashboard');
     }
 
 }
