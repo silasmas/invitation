@@ -16,7 +16,7 @@ class CeremonieListe extends Widget
 
     public function render(): View
     {
-        return view('Filament.Widgets.Ceremonie-liste', [
+        return view('filament.Widgets.ceremonie-liste', [
             'ceremonies' => Ceremonie::orderBy('date')->get(),
         ]);
     }
