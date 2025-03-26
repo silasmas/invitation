@@ -4,9 +4,11 @@ namespace App\Filament\Resources;
 use Filament\Tables;
 use App\Models\Guest;
 use Filament\Forms\Form;
+
 use Filament\Tables\Table;
 use App\Imports\GuestsImport;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\View;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Group;
@@ -139,6 +141,7 @@ class GuestResource extends Resource
                     ->label('Importer avec un fichier Excel')
                     ->icon('heroicon-m-arrow-up-tray')
                     ->form([
+                        View::make('filament.forms.download-template'),
                         Select::make('event_id')
                             ->label(label: 'Événement')
                             ->searchable()
