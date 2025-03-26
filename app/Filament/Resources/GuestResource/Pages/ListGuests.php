@@ -1,10 +1,13 @@
 <?php
-
 namespace App\Filament\Resources\GuestResource\Pages;
 
-use App\Filament\Resources\GuestResource;
 use Filament\Actions;
+// use App\Filament\Resources\GuestResource\Widgets\GuestStats;
+use App\Filament\Widgets\GuestStats;
+use App\Filament\Resources\GuestResource;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Widgets\GuestRelationStats;
+use App\Filament\Widgets\GuestByCeremonieStats;
 
 class ListGuests extends ListRecords
 {
@@ -14,6 +17,13 @@ class ListGuests extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+    public function getHeaderWidgets(): array
+    {
+        return [
+            GuestStats::class,
+            GuestRelationStats::class, // Répartition par relation
         ];
     }
 }

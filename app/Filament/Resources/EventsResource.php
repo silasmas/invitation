@@ -14,6 +14,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\EventsResource\Pages;
+use App\Filament\Resources\EventsResource\Widgets\EventStats;
+
 
 class EventsResource extends Resource
 {
@@ -133,4 +135,5 @@ class EventsResource extends Resource
             'edit'   => Pages\EditEvents::route('/{record}/edit'),
         ];
     }
+
 }
