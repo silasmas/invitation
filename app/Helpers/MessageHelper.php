@@ -29,6 +29,41 @@ class MessageHelper
 
         return trim($text);
     }
+    public static function isValidPhone(?string $phone): bool
+    {
+        return ! empty($phone) && preg_match('/^\+?[1-9]\d{9,14}$/', $phone);
+    }
+    public static function isValidEmail(?string $email): bool
+{
+    return ! empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+public static function cleanMessageForSms(?string $message, int $maxLength = 160): string
+{
+    if (empty($message)) {
+        return '';
+    }
+
+    // 1. Supprime les balises HTML
+    $message = strip_tags($message);
+
+    // 2. Convertit les entités HTML (&nbsp;, &amp; etc.)
+    $message = html_entity_decode($message, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+    // 3. Supprime les multiples espaces, tabulations, retours à la ligne
+    $message = preg_replace('/\s+/', ' ', $message);
+
+    // 4. Nettoyage final
+    $message = trim($message);
+
+    // 5. Limite le message à $maxLength caractères
+    if (mb_strlen($message) > $maxLength) {
+        $message = mb_substr($message, 0, $maxLength - 3) . '...';
+    }
+
+    return $message;
+}
+
+
 
     // public static function generateQRCode()
     // {

@@ -2,9 +2,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\Guest;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use App\Helpers\MessageHelper;
 use Illuminate\Support\Collection;
+use Filament\Notifications\Notification;
 
 class WhatsAppLinks extends Page
 {
@@ -37,8 +38,8 @@ class WhatsAppLinks extends Page
         $ids       = session('guest_ids', []);
         $allGuests = Guest::whereIn('id', $ids)->get();
 
-        $this->guests        = $allGuests->filter(fn($guest) => $this->isValidPhone($guest->phone));
-        $this->invalidGuests = $allGuests->reject(fn($guest) => $this->isValidPhone($guest->phone));
+        $this->guests        = $allGuests->filter(fn($guest) =>MessageHelper::isValidPhone($guest->phone));
+        $this->invalidGuests = $allGuests->reject(fn($guest) =>MessageHelper::isValidPhone($guest->phone));
     }
 
     public function handleDelete()
@@ -51,9 +52,6 @@ class WhatsAppLinks extends Page
             ->success()
             ->send();
     }
-    private function isValidPhone(?string $phone): bool
-    {
-        return ! empty($phone) && preg_match('/^\+?[1-9]\d{9,14}$/', $phone);
-    }
+
 
 }
