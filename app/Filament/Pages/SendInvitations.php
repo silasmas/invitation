@@ -214,7 +214,7 @@ class SendInvitations extends Page implements HasForms
                 ->options([
                     'whatsapp' => 'WhatsApp',
                     'email'    => 'Email',
-                    'sms'      => 'SMS',
+                    'sms'      => 'SMS (Juste pour rappeler les invités)',
                 ])
                 ->default('whatsapp')
                 ->inline()
@@ -233,6 +233,7 @@ class SendInvitations extends Page implements HasForms
                                     ->options(
                                         Guest::whereNotNull('phone')
                                             ->where('phone', '!=', '')
+                                            ->where('phone', 'REGEXP', '^\\+[0-9]{12}$')
                                             ->pluck('nom', 'id')
                                     )
                                     ->searchable()
@@ -622,15 +623,15 @@ class SendInvitations extends Page implements HasForms
 
         // URL de l'API de Keccel (remplacez par l'URL réelle)
         $apiUrl = 'https://api.keccel.com/sms/v2/message.asp';
-        $apiKey = 'KR9DP24WQK5BF4A';
+        $apiKey = 'BAPK3A29RHG6QY2';
         $msg    = MessageHelper::cleanMessageForSms($message, 500);
 // dd($msg);
         // Données à envoyer
         $postData = [
             "token"   => $apiKey,
             "to"      => $phoneNumber,
-            "from"    => 'DGRAD',
-            "message" => $message,
+            "from"    => 'KWETU',
+            "message" => $msg,
         ];
         // dd( $postData);
 
