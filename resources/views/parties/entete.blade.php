@@ -122,7 +122,7 @@
  preloader -->
 
 <div id="pre-loader">
-    <img src="{{ asset('assets/site/images/pre-loader/loader-14.svg') }}" alt="">
+    <img src="{{ asset('assets/site/images/pre-loader/loader-15.svg') }}" alt="">
 </div>
 
 <!--=================================

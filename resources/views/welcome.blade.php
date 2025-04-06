@@ -38,288 +38,107 @@
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
     <style>
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInDown {
-            0% {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes zoomIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes floatUpDown {
-            0% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-8px);
-            }
-
-            100% {
-                transform: translateY(0px);
-            }
-        }
-
-        .floral-top.animate,
-        .floral-bottom.animate {
-            animation: fadeInDown 2s ease-out forwards, floatUpDown 8s ease-in-out infinite;
-        }
-
-        .animate-on-load.animate {
-            opacity: 1;
-        }
-
-        .animate-on-load {
-            opacity: 0;
-            transition: opacity 1s ease, transform 1s ease;
-        }
-
-        .floral-top.animate-on-load {
-            animation: fadeInDown 1s ease-out forwards;
-        }
-
-        .floral-bottom.animate-on-load {
-            animation: zoomIn 2.5s ease-out forwards;
-        }
-
-        .couple-photo.animate-on-load {
-            animation: zoomIn 1.2s ease-out forwards;
-        }
-
-        .falling-petal {
-            position: fixed;
-            top: -50px;
-            width: 20px;
-            height: 20px;
-            background-image: url('{{ asset('assets/images/petal.png') }}');
-            /* mets une petite image de pétale ici */
-            background-size: cover;
-            opacity: 0.8;
-            pointer-events: none;
-            z-index: 10;
-            animation: fall 12s linear infinite;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.8;
-            }
-
-            50% {
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .page-wrapper {
-            opacity: 0;
-            transform: scale(0.98);
-        }
-
-        .page-wrapper.animate {
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 1s ease, transform 1s ease;
-        }
-
-        .intro-screen {
-            position: fixed;
-            z-index: 9999;
-            background: white;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Tangerine', cursive;
-            font-size: 60px;
-            color: #cc3366;
-            opacity: 1;
-            transition: opacity 2s ease, transform 2s ease;
-        }
-
-        .intro-screen.fade-out {
-            opacity: 0;
-            transform: scale(1.05);
-            pointer-events: none;
-        }
-
+        body { margin: 0; font-family: 'Tangerine', cursive; }
+        body.block-scroll { overflow: hidden; }
+    
         .curtain-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 100vw;
-            z-index: 9999;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          width: 100vw;
+          z-index: 9999;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          pointer-events: auto;
+          overflow: hidden;
+          background: url('../assets/images/voilage.png') center center / cover no-repeat;
         }
-
+    
         .curtain {
-            background: linear-gradient(to right, #b90e5b, #e54a86);
-            /* couleur de rideau */
-            width: 50vw;
-            height: 100vh;
-            transition: transform 2.5s ease-in-out;
+          width: 50vw;
+          height: 100vh;
+          background: url('../assets/images/rideau-texture.png') repeat-y;
+          background-size: cover;
+          transition: transform 2.5s ease-in-out;
+          box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
         }
-
-        .left-curtain {
-            transform: translateX(0);
-            border-right: 2px solid #fff;
+    
+        .left-curtain { transform: translateX(0); border-radius: 0 50% 50% 0; }
+        .right-curtain { transform: translateX(0); border-radius: 50% 0 0 50%; }
+        .curtain.open-left { transform: translateX(-100%); }
+        .curtain.open-right { transform: translateX(100%); }
+    
+        .curtain-content {
+          position: absolute;
+          z-index: 10000;
+          width: 100%;
+          text-align: center;
+          color: white;
+          text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+          padding: 20px;
         }
-
-        .right-curtain {
-            transform: translateX(0);
-            border-left: 2px solid #fff;
+        .curtain-content h1 { font-size: 6vw; margin: 0; }
+        .curtain-content h2 { font-size: 10vw; margin-bottom: 20px; }
+        .enter-btn {
+          padding: 10px 24px;
+          font-size: 4vw;
+          max-width: 90vw;
+          background: white;
+          color: #b90e5b;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.3s ease;
         }
-
-        /* rideau ouvert */
-        .curtain.open-left {
-            transform: translateX(-100%);
+        .enter-btn:hover { background: #f9cce1; }
+        @media (min-width: 768px) {
+          .curtain-content h1 { font-size: 40px; }
+          .curtain-content h2 { font-size: 64px; }
+          .enter-btn { font-size: 18px; padding: 14px 36px; }
         }
-
-        .curtain.open-right {
-            transform: translateX(100%);
+    
+        .falling-petal {
+          position: fixed;
+          top: -50px;
+          width: 20px;
+          height: 20px;
+          background-image: url('../assets/images/petal.png');
+          background-size: cover;
+          opacity: 0.8;
+          pointer-events: none;
+          z-index: 10;
+          animation: fall 12s linear infinite;
         }
-        body.block-scroll {
-  overflow: hidden;
-}
-
-.curtain-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  z-index: 9999;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  pointer-events: auto;
-}
-
-/* rideaux */
-.curtain {
-  background: linear-gradient(to right, #b90e5b, #e54a86);
-  width: 50vw;
-  height: 100vh;
-  transition: transform 2.5s ease-in-out;
-}
-
-.left-curtain {
-  transform: translateX(0);
-  border-right: 2px solid #fff;
-}
-
-.right-curtain {
-  transform: translateX(0);
-  border-left: 2px solid #fff;
-}
-
-.curtain.open-left {
-  transform: translateX(-100%);
-}
-
-.curtain.open-right {
-  transform: translateX(100%);
-}
-
-/* contenu du rideau */
-.curtain-content {
-  position: absolute;
-  z-index: 10000;
-  width: 100%;
-  text-align: center;
-  color: white;
-  font-family: 'Tangerine', cursive;
-  text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
-}
-
-.curtain-content h1 {
-  font-size: 48px;
-  margin: 0;
-}
-
-.curtain-content h2 {
-  font-size: 72px;
-  margin-bottom: 20px;
-}
-
-.enter-btn {
-  padding: 12px 24px;
-  font-size: 20px;
-  background: white;
-  color: #b90e5b;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.enter-btn:hover {
-  background: #f8d6e0;
-}
-
-    </style>
+    
+        @keyframes fall {
+          0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+          50% { opacity: 1; }
+          100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+      </style>
 </head>
 
 <body>
-    {{-- <div id="intro-screen" class="intro-screen">
-        <div class="intro-text">Bienvenue à notre mariage</div>
-      </div> --}}
-    
     <div class="curtain-wrapper" id="curtain">
         <div class="curtain left-curtain"></div>
+    
         <div class="curtain-content">
             <h1>Bienvenue au mariage de</h1>
-            <h2>Nathan & Emily</h2>
+            <h2>Chrisiabelle & Arcele</h2>
             <button class="enter-btn" onclick="openCurtain()">Ouvrir l’invitation</button>
         </div>
+    
         <div class="curtain right-curtain"></div>
     </div>
+   
 
     <!--=================================
  preloader -->
 
     <div id="pre-loader">
-        <img src="{{ asset('assets/site/images/pre-loader/loader-09.svg') }}" alt="">
+        <img src="{{ asset('assets/site/images/pre-loader/loader-15.svg') }}" alt="">
     </div>
 
     <!--=================================
@@ -523,7 +342,7 @@
         });
     </script> --}}
 
-    <script>
+    {{-- <script>
     document.addEventListener("DOMContentLoaded", function () {
       const intro = document.getElementById('intro-screen');
 
@@ -602,8 +421,37 @@
   
       }, 2500);
     }
-  </script>
-  
+  </script> --}}
+  <script>
+    function openCurtain() {
+        document.querySelector('.left-curtain').classList.add('open-left');
+        document.querySelector('.right-curtain').classList.add('open-right');
+        setTimeout(() => {
+            document.getElementById('curtain').style.display = "none";
+            document.body.classList.remove('block-scroll');
+
+            document.querySelectorAll('.animate-on-load').forEach((el, i) => {
+                setTimeout(() => el.classList.add('animate'), i * 400);
+            });
+
+            setTimeout(() => {
+                for (let i = 0; i < 25; i++) {
+                    let petal = document.createElement("div");
+                    petal.classList.add("falling-petal");
+                    petal.style.left = Math.random() * 100 + "vw";
+                    petal.style.animationDelay = Math.random() * 6 + "s";
+                    document.body.appendChild(petal);
+                }
+            }, 1000);
+
+            AOS.init({
+                duration: 1500,
+                once: true
+            });
+            document.getElementById('bg-music')?.play();
+        }, 2500);
+    }
+</script>
 
 </body>
 

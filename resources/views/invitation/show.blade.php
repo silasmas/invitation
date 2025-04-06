@@ -6,7 +6,7 @@
     <div class="curtain-content">
         <h1>Bienvenue au mariage de</h1>
         <h2>{{ $invitation->ceremonies->event->femme }} & {{ $invitation->ceremonies->event->homme }}</h2>
-        <button class="enter-btn" onclick="openCurtain()">Entrer dans l’invitation</button>
+        <button class="enter-btn" onclick="openCurtain()">Ouvrir l’invitation</button>
     </div>
 
     <div class="curtain right-curtain"></div>
