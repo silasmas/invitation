@@ -17,7 +17,7 @@
 <script src="{{ asset('assets/site/js/custom.js') }} "></script>
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
 @yield("script")
 

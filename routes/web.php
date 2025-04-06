@@ -26,6 +26,9 @@ Route::get('/invitation/{reference}', [InvitationController::class, 'show'])->na
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/model', function () {
+    return view('index');
+});
 
 Route::get('/i/{code}', function ($code) {
     $link = ShortLink::where('code', $code)->firstOrFail();

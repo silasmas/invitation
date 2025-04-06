@@ -2,7 +2,7 @@
 
 <!--=================================
  login-->
-
+ 
 <section class="wedding-card page-section-ptb">
     <div class="container">
         <div class="row justify-content-center no-gutter">
@@ -82,55 +82,4 @@
  login-->
 
 @include('parties.pied')
-<script>
-    $(document).ready(function() {
-        // Injecter automatiquement le token CSRF dans les requêtes AJAX
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
 
-
-
-        // Refuser l'invitation via AJAX
-        $('#close-btn').on('click', function() {
-            let invitationId = $(this).data('invitation-id');
-            $.post('/invitations/' + invitationId + '/close', function(response) {
-                if (response.reponse == true) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Invitation',
-                        text: response.message,
-                        timer: 7000,
-                        showConfirmButton: false
-                    });
-
-                    setTimeout(() => location.reload(), 5000);
-                } else {
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invitation',
-                        text: response.message,
-                        showConfirmButton: true
-                    });
-                }
-                S
-            }).fail(function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
-                    text: 'Impossible de confirmer l’invitation.'
-                });
-            });
-
-        });
-
-        // Télécharger le QR Code
-        $('#download-qr-btn').on('click', function() {
-            let invitationId = $(this).data('invitation-id');
-            window.location.href = '/invitations/' + invitationId + '/download-qrcode';
-        });
-    });
-</script>
