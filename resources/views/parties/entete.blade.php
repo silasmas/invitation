@@ -33,7 +33,7 @@
 
 <!-- Responsive -->
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/site/css/responsive.css') }} " />
-<style>
+{{-- <style>
     body { margin: 0; font-family: 'Tangerine', cursive; }
     body.block-scroll { overflow: hidden; }
 
@@ -113,11 +113,11 @@
       50% { opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
-  </style>
+  </style> --}}
 </head>
 
 <body>
-  
+
 <!--=================================
  preloader -->
 

@@ -1,6 +1,6 @@
 @include('parties.entete')
 
-<div class="curtain-wrapper" id="curtain">
+{{-- <div class="curtain-wrapper" id="curtain">
     <div class="curtain left-curtain"></div>
 
     <div class="curtain-content">
@@ -10,7 +10,7 @@
     </div>
 
     <div class="curtain right-curtain"></div>
-</div>
+</div> --}}
 
 <!--=================================
  login-->

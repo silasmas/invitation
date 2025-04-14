@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ShortLink;
+use App\Models\Invitation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
@@ -27,7 +28,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/model', function () {
-    return view('index');
+    $invitation = Invitation::where('reference', "INV-20250328-IK521R")->firstOrFail();
+        
+    return view('index',compact('invitation'));
 });
 
 Route::get('/i/{code}', function ($code) {
