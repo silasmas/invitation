@@ -233,7 +233,7 @@ class SendInvitations extends Page implements HasForms
                                     ->options(
                                         Guest::whereNotNull('phone')
                                             ->where('phone', '!=', '')
-                                            ->where('phone', 'REGEXP', '^\\[0-9]{12}$')
+                                            ->where('phone', 'REGEXP', '^\\+[0-9]{12}$')
                                             ->pluck('nom', 'id')
                                     )
                                     ->searchable()
