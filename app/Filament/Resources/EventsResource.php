@@ -41,10 +41,19 @@ class EventsResource extends Resource
                             ->label('Date')
                             ->required()
                             ->columnSpan(4),
-                        TextInput::make('lieu')
+                            TextInput::make('lieu')
                             ->label('Lieu')
                             ->required()
                             ->columnSpan(4),
+                        TextInput::make('homme')
+                            ->label('Nom du mari')
+                            ->required()
+                            ->columnSpan(6),
+                        TextInput::make('femme')
+                            ->label('nom de la femme')
+                            ->required()
+                            ->columnSpan(6),
+
                         Select::make('status')
                             ->label('Status')
                             ->columnSpan(6)

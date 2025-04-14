@@ -68,7 +68,7 @@ class CeremonieResource extends Resource
                     ])
                     ->columnSpan(6),
                     RichEditor::make('description')
-                    ->label(label: 'Description')
+                    ->label(label: "Message de pour la cérémonie")
                     ->toolbarButtons([
                         'attachFiles',
                         'blockquote',
