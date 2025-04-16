@@ -52,58 +52,7 @@ class SendInvitations extends Page implements HasForms
     {
         // Éventuellement précharger des choses ici
     }
-    // public function submit()
-    // {
-    //     if (empty($this->selectedGuests)) {
-    //         Notification::make()->title("Erreur")->body("Veuillez sélectionner au moins un invité.")->danger()->send();
-    //         return;
-    //     }
 
-    //     if (! $this->ceremonieId) {
-    //         Notification::make()->title("Erreur")->body("Veuillez choisir une cérémonie.")->danger()->send();
-    //         return;
-    //     }
-    //     if (! $this->table) {
-    //         Notification::make()->title("Erreur")->body("Veuillez choisir une table.")->danger()->send();
-    //         return;
-    //     }
-    //     if ($this->smsCount > 3) {
-    //         Notification::make()
-    //             ->title('Message trop long')
-    //             ->body("Le message dépasse 3 SMS (actuellement {$this->smsCount}). Réduisez-le avant d’envoyer.")
-    //             ->danger()
-    //             ->send();
-
-    //         return;
-    //     }
-    //     if ($this->Invitation()) {
-    //         $guestIds = array_filter($this->selectedGuests); // supprime les valeurs nulles/vides
-
-    //         $guests = Guest::whereIn('id', $guestIds)
-    //             ->whereHas('invitation', fn($query) => $query->whereNotNull('message'))
-    //             ->with(['invitation', 'invitation.ceremonies.event'])
-    //             ->get()
-    //             ->filter(function ($guest) {
-    //                 return match ($this->activeChannel) {
-    //                     'whatsapp', 'sms' => MessageHelper::isValidPhone($guest->phone ?? ''),
-    //                     'email' => MessageHelper::isValidEmail($guest->email ?? ''),
-    //                     default => false,
-    //                 };
-    //             })->values(); // ->values() pour réindexer proprement
-    //         match ($this->activeChannel) {
-    //             'whatsapp' => $this->envoyerViaWhatsapp($guests),
-    //             'email' => $this->envoyerViaEmail($guests),
-    //             'sms' => $this->envoyerViaSms($guests),
-    //         };
-    //     } else {
-    //         Notification::make()
-    //             ->title('Erreur')
-    //             ->body("Impossible de créer les invitations.")
-    //             ->danger()
-    //             ->send();
-    //     }
-
-    // }
     public function submit()
     {
         if (empty($this->selectedGuests)) {
@@ -168,7 +117,7 @@ class SendInvitations extends Page implements HasForms
             })->values();
 
         match ($this->activeChannel) {
-            'whatsapp' => $this->envoyerViaWhatsapp($guests),
+            'whatsapp' => $this->envoyerViaWhatsapp($guests,$this->message),
             'email' => $this->envoyerViaEmail($guests),
             'sms' => $this->envoyerViaSms($guests),
         };
@@ -293,7 +242,7 @@ class SendInvitations extends Page implements HasForms
 
                                 Group::make([
                                     Textarea::make('messageSms')
-                                        ->helperText("Utilisez {type} {nom} pour Mr nom sur l'invitation, {ceremony} pour le nom de la cérémonie,
+                                        ->helperText("Utilisez {categorie} {nom} pour Mr nom sur l'invitation, {ceremony} pour le nom de la cérémonie,
                                     {date} pour la date et l'huere de la ceremonie,{femme} et {homme}pour les noms des mariés, {lien} pour le lien vers l'invitation")
                                         ->label('Message à envoyer (SMS)')
                                         ->required()
@@ -432,10 +381,11 @@ class SendInvitations extends Page implements HasForms
         }
     }
 
-    public function envoyerViaWhatsapp($guests)
+    public function envoyerViaWhatsapp($guests,$messageTxt)
     {
         // Sauvegarder les invités valides dans la session
         session()->put('guest_ids', $guests->pluck('id')->toArray());
+        session()->put('messageTxt', $messageTxt);
 
         // ✅ Rediriger vers la page des liens
         return redirect()->route('filament.admin.pages.whatsapp');

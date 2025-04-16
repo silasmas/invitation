@@ -1,6 +1,9 @@
 <?php
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Log;
+use Filament\Notifications\Notification;
+
 // require_once app_path('Libraries/qrcode/qrlib.php');
 class MessageHelper
 {
@@ -64,15 +67,63 @@ public static function cleanMessageForSms(?string $message, int $maxLength = 160
 }
 
 
+public static function sendSms($phoneNumber, $message)
+{
+    // 🔹 Vérification : Si le numéro est vide, ne pas envoyer de SMS
+    if (empty($phoneNumber)) {
+        Notification::make()->title("Erreur")->body("Le numéro de téléphone est vide")->danger()->send();
+        Log::error("Erreur : Le numéro de téléphone est vide. ");
 
-    // public static function generateQRCode()
-    // {
-    //     $text     = 'https://event.kwetu.cd';
-    //     $filename = public_path('qrcode/myqr.png');
+    }
 
-    //     \QRcode::png($text, $filename, QR_ECLEVEL_L, 4);
+    // 🔹 Vérification : Si le numéro n'est pas valide, ne pas envoyer de SMS
+    if (! MessageHelper::isValidPhone($phoneNumber)) {
+        Notification::make()->title("Erreur")->body("Le numéro de téléphone n'est pas valide.")->danger()->send();
+        Log::error("Erreur : Le numéro de téléphone n'est pas valide. ");
 
-    //     return response()->file($filename);
-    // }
+    }
+
+    // URL de l'API de Keccel (remplacez par l'URL réelle)
+    $apiUrl = 'https://api.keccel.com/sms/v2/message.asp';
+    $apiKey = 'BAPK3A29RHG6QY2';
+    $msg    = MessageHelper::cleanMessageForSms($message, 500);
+// dd($msg);
+    // Données à envoyer
+    $postData = [
+        "token"   => $apiKey,
+        "to"      => $phoneNumber,
+        "from"    => 'KWETU',
+        "message" => $msg,
+    ];
+    // dd( $postData);
+
+    // Initialisation de cURL
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Authorization: Bearer $apiKey",
+    ]);
+
+    // Exécuter la requête
+    $response = curl_exec($ch);
+
+    // Vérifier les erreurs
+    if (curl_errno($ch)) {
+        echo "Erreur cURL : " . curl_error($ch);
+    }
+
+    $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    return [
+        "status_code" => true,
+        "response"    => json_decode($response, true),
+    ];
+}
 
 }

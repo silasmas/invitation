@@ -13,12 +13,12 @@ class ListInvitations extends ListRecords
 {
     protected static string $resource = InvitationsResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         Actions\CreateAction::make(),
+    //     ];
+    // }
     public function getHeaderWidgets(): array
     {
         return [

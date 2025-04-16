@@ -18,19 +18,16 @@ class WhatsAppLinks extends Page
 
     public Collection $guests;
     public Collection $invalidGuests;
-    public string $messageTemplate = "Bonjour {categorie} {nom},\n
-                                    Vous êtes invité à la cérémonie : {ceremonie}.\n
-                                    Cliquez ici pour voir votre invitation : {lien}";
+    public string $messageTemplate = "";
 
     public function mount()
     {
-        if (empty($this->messageTemplate)) {
-            $this->messageTemplate = "Bonjour {categorie} {nom},\n
-                                        Vous êtes invité à la cérémonie : {ceremonie}.\n
-                                        Cliquez ici pour voir votre invitation : {lien}";
-        }
+
+            $this->messageTemplate = session( 'messageTxt',[]);
+//
         if (request()->isMethod('post')) {
             session()->forget('guest_ids');
+            session()->forget('messageTxt');
             $this->guests = collect(); // vide la liste
             return;
         }
@@ -40,11 +37,13 @@ class WhatsAppLinks extends Page
 
         $this->guests        = $allGuests->filter(fn($guest) =>MessageHelper::isValidPhone($guest->phone));
         $this->invalidGuests = $allGuests->reject(fn($guest) =>MessageHelper::isValidPhone($guest->phone));
+
     }
 
     public function handleDelete()
     {
         session()->forget('guest_ids');
+        session()->forget('messageTxt');
         $this->guests        = collect();
         $this->invalidGuests = collect();
         Notification::make()

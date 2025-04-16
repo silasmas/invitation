@@ -19,6 +19,21 @@
     <section class="wedding-card page-section-ptb">
         <div class="container">
             <div class="row justify-content-center no-gutter">
+                @if ($invitation->status == 'refuse')
+                    <div class="col-lg-4 align-self-center">
+                        <div class="wedding-invitation white-bg p-5">
+                            <div class="wedding-card-head text-center floral-top animate-on-load">
+                                <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
+                            </div>
+                            <div class="wedding-card-body text-center position-relative">
+                                <h5>Invitation refusée</h5>
+                                <h6>Vous avez refusé l'invitation de {{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                @else
+
                 <div class="col-lg-8 align-self-center">
                     <div class="wedding-invitation white-bg p-5">
                         <div class="wedding-card-head text-center floral-top animate-on-load">
@@ -88,7 +103,7 @@
 
                             @switch($invitation->status)
                                 @case('send')
-                                    <button type="button" class="btn rsvp-btn mt-10" data-bs-toggle="modal"
+                                    <button type="button" class="btn rsvp-btn mt-10 rounded-pill" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal">Confirmez votre présence</button>
                                 @break
 
@@ -113,7 +128,7 @@
                                 @break
 
                                 @case('accept')
-                                    <button type="button" class="btn rsvp-btn mt-10" data-bs-toggle="modal"
+                                    <button type="button" class="btn rsvp-btn mt-10  rounded" data-bs-toggle="modal"
                                         data-bs-target="#map">Voir le QRCODE</button>
                                 @break
 
@@ -214,7 +229,7 @@
                                                 </div>
                                                 <div class="section-field submit-button">
                                                     <button id="submit" name="submit" type="submit"
-                                                        value="Send" class="button"> Je confirme ma
+                                                        value="Send" class="button rounded-pill"> Je confirme ma
                                                         présence</button>
                                                 </div>
                                             </div>
@@ -258,6 +273,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </section>

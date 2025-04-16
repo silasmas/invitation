@@ -1,5 +1,6 @@
 @php
     use App\Helpers\MessageHelper;
+    // dd($guests);
 @endphp
 
 <x-filament::page>
@@ -28,12 +29,34 @@
                         $lienCourt = \App\Services\LienCourt::generate($invitation->reference); // on le crée juste après
 
                         // 3. Créer le message en insérant {nom}, {categorie}, {lien}, etc.
+                        // $messageHtml = str_replace(
+                        //     ['{nom}', '{categorie}', '{lien}'],
+                        //     [$guest->nom, $guest->categorie ?? '', $lienCourt],
+                        //     $messageTemplate ?? '',
+                        // );
                         $messageHtml = str_replace(
-                            ['{nom}', '{categorie}', '{lien}'],
-                            [$guest->nom, $guest->categorie ?? '', $lienCourt],
-                            $invitation->message ?? '',
+                            [
+                                '{homme}',
+                                '{femme}',
+                                '{adresse}',
+                                '{categorie}',
+                                '{nom}',
+                                '{ceremony}',
+                                '{date}',
+                                '{lien}',
+                            ],
+                            [
+                                $invitation->ceremonies->event->homme,
+                                $invitation->ceremonies->event->femme,
+                                $invitation->ceremonies->adresse,
+                                $guest->type,
+                                $guest->nom,
+                                $invitation->ceremonies->nom,
+                                $invitation->ceremonies->adresse,
+                                $lienCourt,
+                            ],
+                            $messageTemplate,
                         );
-
                         // 4. Nettoyer le HTML pour le format WhatsApp/SMS
                         $messageTexte = MessageHelper::cleanFormattedMessage($messageHtml);
                     }

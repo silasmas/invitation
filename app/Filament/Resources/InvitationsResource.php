@@ -1,33 +1,32 @@
 <?php
 namespace App\Filament\Resources;
 
-use Filament\Tables;
-use Filament\Forms\Form;
+use App\Filament\Resources\InvitationsResource\Pages;
+use App\Filament\Widgets\InvitationStats;
+use App\Helpers\MessageHelper;
 use App\Models\Invitation;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Enums\FiltersLayout;
-use App\Filament\Widgets\InvitationStats;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use App\Filament\Resources\InvitationsResource\Pages;
-use App\Filament\Resources\InvitationsResource\Pages\EditInvitations;
-use App\Filament\Resources\InvitationsResource\Pages\ListInvitations;
-use App\Filament\Resources\InvitationsResource\Pages\CreateInvitations;
+use Filament\Tables\Table;
 
 class InvitationsResource extends Resource
 {
@@ -35,6 +34,8 @@ class InvitationsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort    = 4;
+    public string $messageWhatsapp           = "Bonjour {nom}, vous êtes invité à notre événement via WhatsApp !";
+
     public static function getLabel(): string
     {
         return 'Invitations';
@@ -113,6 +114,9 @@ class InvitationsResource extends Resource
                 TextColumn::make('reference')
                     ->label("Référence")
                     ->searchable(),
+                TextColumn::make('guests.phone')
+                    ->label("Téléphone")
+                    ->searchable(),
                 TextColumn::make('boissons')
                     ->label("Boissons")
                     ->searchable(),
@@ -131,13 +135,13 @@ class InvitationsResource extends Resource
                         'accept'                          => 'success',
                         'refuse'                          => 'danger',
                         default                           => 'gray',
-                    })->formatStateUsing(fn (string $state) => match ($state) {
-                        'pedding' => 'En attente',
-                        'send'    => 'Envoyée',
-                        'accept'  => 'Acceptée',
-                        'refuse'  => 'Refusée',
-                        default   => ucfirst($state)
-                    })
+                    })->formatStateUsing(fn(string $state) => match ($state) {
+                    'pedding'                              => 'En attente',
+                    'send'                                 => 'Envoyée',
+                    'accept'                               => 'Acceptée',
+                    'refuse'                               => 'Refusée',
+                    default                                => ucfirst($state)
+                })
                     ->sortable()
                     ->searchable(),
 
@@ -145,7 +149,7 @@ class InvitationsResource extends Resource
                     ->label("Table")
                     ->searchable(),
                 IconColumn::make('confirmation')
-                ->label("Etat")
+                    ->label("Etat")
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -176,11 +180,11 @@ class InvitationsResource extends Resource
 
                 SelectFilter::make('boissons')
                     ->label('Boisson préférée')
-                    ->options(fn () => \App\Models\Invitation::query()
-                        ->select('boissons')
-                        ->distinct()
-                        ->pluck('boissons', 'boissons')
-                        ->filter()),
+                    ->options(fn() => \App\Models\Invitation::query()
+                            ->select('boissons')
+                            ->distinct()
+                            ->pluck('boissons', 'boissons')
+                            ->filter()),
 
                 SelectFilter::make('ceremonie_id')
                     ->label('Cérémonie')
@@ -198,15 +202,116 @@ class InvitationsResource extends Resource
                     DeleteAction::make(),
                 ]),
             ])->headerActions([
-                Action::make('statistiques')
-                    ->label(fn () => '📊 ' . \App\Models\Invitation::count() . ' invitations au total')
-                    ->disabled() // juste pour l'afficher
-                    ->color('gray'),
-            ])
+            Action::make('statistiques')
+                ->label(fn() => '📊 ' . \App\Models\Invitation::count() . ' invitations au total')
+                ->disabled() // juste pour l'afficher
+                ->color('gray'),
+            Action::make('export-filtré')
+                ->label('Exporter ce qui est affiché')
+                ->icon('heroicon-o-document-arrow-down')
+                ->action(function (\Filament\Tables\Table $livewire) {
+                    return \Maatwebsite\Excel\Facades\Excel::download(
+                        new \App\Exports\InvitationExport($livewire->getFilteredTableQuery()->get()),
+                        'invitations-filtrees.xlsx'
+                    );
+                }),
+            Action::make('export-tout')
+                ->label('Exporter tout')
+                ->icon('heroicon-o-archive-box-arrow-down')
+                ->action(function () {
+                    return \Maatwebsite\Excel\Facades\Excel::download(
+                        new \App\Exports\InvitationExport(\App\Models\Invitation::all()),
+                        'invitations-toutes.xlsx'
+                    );
+                }),
+
+        ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+                BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                BulkAction::make('export')
+                    ->label('Exporter la sélection')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function ($records) {
+                        return \Maatwebsite\Excel\Facades\Excel::download(
+                            new \App\Exports\InvitationExport($records),
+                            'invitations-selection.xlsx'
+                        );
+                    }),
+                BulkAction::make('whatsapp_links')
+                    ->label('Générer les liens WhatsApp')
+                    ->icon('heroicon-o-chat-bubble-left')
+                    ->color('success')
+                    ->form([
+                        Textarea::make('messageTxt')
+                            ->label('Message personnalisé')
+                            ->rows(6)
+                            ->helperText("Utilisez {categorie} {nom} pour Mr nom sur l'invitation, {ceremony} pour le nom de la cérémonie,
+                                    {date} pour la date et l'huere de la ceremonie,{femme} et {homme}pour les noms des mariés, {lien} pour le lien vers l'invitation")
+                        // ->default('Bonjour {nom}, vous êtes invité à notre événement...')
+                            ->required(),
+                    ])
+                    ->action(function ($records, array $data) {
+                        // 🔥 On filtre uniquement ceux avec numéro valide
+                        $valid = $records->filter(function ($record) {
+                            return ! empty($record->guests?->phone);
+                        });
+                        $phones = $valid->map(fn($record) => $record->guests?->phone)->filter()->values();
+                        // 🔁 On extrait les IDs des invités, pas des invitations
+                        $guestIds = $valid
+                            ->map(fn($record) => $record->guests?->id)
+                            ->filter()
+                            ->unique()
+                            ->values();
+                        session()->put('phones', $phones);
+                        session()->put('guest_ids', $guestIds->toArray());
+                        session()->put('messageTxt', $data['messageTxt']);
+                        return redirect()->route('filament.admin.pages.whatsapp');
+                    })
+                    ->requiresConfirmation(),
+                BulkAction::make('whatsapp_links')
+                    ->label('Envoyé un SMS de rappel')
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->color('warning')
+                    ->form([
+                        Textarea::make('messageSms')
+                            ->label('Message à envoyer (SMS)')
+                            ->helperText("Utilisez {categorie} {nom}, {ceremony}, {date}, {homme}, {femme}, {lien}")
+                            ->required()
+                            ->rows(5)
+                            ->maxLength(480),
+                    ])->action(function ($records, array $data) {
+                    foreach ($records as $invitation) {
+                        $guest = $invitation->guests;
+
+                        if (! $guest || ! MessageHelper::isValidPhone($guest->phone)) {
+                            continue;
+                        }
+
+                        // Récupérer les données dynamiques
+                        $message = str_replace([
+                            '{categorie}', '{nom}', '{ceremony}', '{date}', '{homme}', '{femme}', '{lien}',
+                        ], [
+                            $guest->type ?? '',
+                            $guest->nom ?? '',
+                            optional($invitation->ceremonies)->nom ?? '',
+                            optional($invitation->ceremonies)->date?->format('d/m/Y H:i') ?? '',
+                            optional($invitation->event)->homme ?? '',
+                            optional($invitation->event)->femme ?? '',
+                            route('invitation.show', $invitation->reference),
+                        ], $data['messageSms']);
+
+                        // ✅ Appel du helper pour envoyer le SMS
+                        MessageHelper::sendSms($guest->phone, $message);
+                    }\Filament\Notifications\Notification::make()
+                        ->title('SMS envoyés')
+                        ->body('Les messages ont été envoyés aux '.$records->count().' invités sélectionnés.')
+                        ->success()
+                        ->send();
+                })
+                    ->requiresConfirmation(),
+
             ])->defaultSort('created_at', 'desc');
     }
 

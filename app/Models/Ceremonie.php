@@ -1,10 +1,13 @@
 <?php
 namespace App\Models;
 
-use App\Models\Invitation;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\Groupe;
+use App\Models\Invitation;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Ceremonie extends Model
 {
     use HasFactory;
@@ -17,14 +20,23 @@ class Ceremonie extends Model
     }
 
     protected $guarded = [];
+
     protected $casts = [
+        'dressCode' => 'array',
         'date' => 'datetime',
     ];
+
 
     public function invitation()
     {
 
         return $this->hasMany(Invitation::class);
+
+    }
+    public function groupe()
+    {
+
+        return $this->hasMany(Groupe::class);
 
     }
     public function getDayAttribute()

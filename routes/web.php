@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\InvitationController;
-
+use App\Exports\DuplicatesExport;
+use Maatwebsite\Excel\Facades\Excel;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,7 +30,7 @@ Route::get('/', function () {
 });
 Route::get('/model', function () {
     $invitation = Invitation::where('reference', "INV-20250328-IK521R")->firstOrFail();
-        
+
     return view('index',compact('invitation'));
 });
 
@@ -38,6 +39,7 @@ Route::get('/i/{code}', function ($code) {
     return Redirect::route('invitation.show', ['reference' => $link->reference]);
 });
 Route::post('/invitations/accept', [InvitationController::class, 'accept']);
+Route::post('/invitations/confirmation/', [InvitationController::class, 'confirmation']);
 Route::post('/invitations/{invitation}/decline', [InvitationController::class, 'decline']);
 Route::post('/invitations/{invitation}/close', [InvitationController::class, 'close']);
 Route::get('/invitations/{invitation}/download-qrcode', [QRCodeController::class, 'downloadQrCode']);
@@ -49,3 +51,13 @@ Route::get('/clear-cache', function () {
 Route::get('/test-user', function () {
     dd(auth()->user());
 });
+Route::get('/boissons/export-duplicates', function (\Illuminate\Http\Request $request) {
+    $json = base64_decode($request->get('data'));
+    $duplicates = json_decode($json, true);
+
+    if (empty($duplicates)) {
+        return redirect()->back()->with('danger', 'Aucun doublon à exporter.');
+    }
+
+    return Excel::download(new DuplicatesExport($duplicates), 'doublons-boissons.xlsx');
+})->name('boissons.export-duplicates');
