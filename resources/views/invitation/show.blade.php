@@ -1,20 +1,6 @@
 @include('parties.entete')
 
-{{-- <div class="curtain-wrapper" id="curtain">
-    <div class="curtain left-curtain"></div>
 
-    <div class="curtain-content">
-        <h1>Bienvenue au mariage de</h1>
-        <h2>{{ $invitation->ceremonies->event->femme }} & {{ $invitation->ceremonies->event->homme }}</h2>
-        <button class="enter-btn" onclick="openCurtain()">Ouvrir l’invitation</button>
-    </div>
-
-    <div class="curtain right-curtain"></div>
-</div> --}}
-
-<!--=================================
- login-->
-{{-- <div class="page-wrapper animate-on-load"> --}}
 <div class="animate-on-load" style="text-align:center; padding:10px 20px;">
     <section class="wedding-card page-section-ptb">
         <div class="container">
@@ -27,252 +13,313 @@
                             </div>
                             <div class="wedding-card-body text-center position-relative">
                                 <h5>Invitation refusée</h5>
-                                <h6>Vous avez refusé l'invitation de {{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}</h6>
+                                <h6>Vous avez refusé l'invitation de
+                                    {{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}
+                                </h6>
                             </div>
                         </div>
                     </div>
-
                 @else
-
-                <div class="col-lg-8 align-self-center">
-                    <div class="wedding-invitation white-bg p-5">
-                        <div class="wedding-card-head text-center floral-top animate-on-load">
-                            <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
-                        </div>
-                        <div class="wedding-card-body text-center position-relative">
-                            <h5>Wedding Invitation</h5>
-                            <div class="bg-image couple-photo animate-on-load" data-aos="zoom-in"data-aos-delay="200">
-                                <img src="{{ asset('assets/site/images/couple.png') }}" alt=""
-                                    class="img-fluid">
-                                <div class="mask"></div>
+                    <div class="col-lg-8 align-self-center">
+                        <div class="wedding-invitation white-bg p-5">
+                            <div class="wedding-card-head text-center floral-top animate-on-load">
+                                <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
                             </div>
-                            <h1 class="my-2">{{ $invitation->guests->type . ' ' . $invitation->guests->nom }}</h1>
-                            <h6>{{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}
-                                ont le bonheur de vous recevoir à un moment inoubliable :</h6>
-                            @switch($invitation->ceremonies->nom)
-                                @case('Coutumier')
-                                    <div class="wedding-card-date mt-3">
-                                        <div class="row justify-content-center">
-                                            <div class="col-md-3 theme-color text-end">
-                                                {{ $invitation->ceremonies->day_of_week }}<br>
-                                                {{ $invitation->ceremonies->month }}</div>
-                                            <div class="col-md-2 theme-color text-center date xs-mt-20">
-                                                {{ $invitation->ceremonies->day }}
+                            <div class="wedding-card-body text-center position-relative">
+                                <h5>Wedding Invitation</h5>
+                                <div class="bg-image couple-photo animate-on-load"
+                                    data-aos="zoom-in"data-aos-delay="200">
+                                    <img src="{{ asset('assets/site/images/couple.png') }}" alt=""
+                                        class="img-fluid">
+                                    <div class="mask"></div>
+                                </div>
+                                <h1 class="my-2">{{ $invitation->guests->type . ' ' . $invitation->guests->nom }}</h1>
+                                <h6>{{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}
+                                    ont le bonheur de vous recevoir à un moment inoubliable :</h6>
+                                @switch($invitation->ceremonies->nom)
+                                    @case('Coutumier')
+                                        <div class="wedding-card-date mt-3">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-3 theme-color text-end">
+                                                    {{ $invitation->ceremonies->day_of_week }}<br>
+                                                    {{ $invitation->ceremonies->month }}</div>
+                                                <div class="col-md-2 theme-color text-center date xs-mt-20">
+                                                    {{ $invitation->ceremonies->day }}
+                                                </div>
+                                                <div class="col-md-3 theme-color text-start xs-mt-20">
+                                                    {{ $invitation->ceremonies->time }}<br>
+                                                    {{ $invitation->ceremonies->year }}</div>
                                             </div>
-                                            <div class="col-md-3 theme-color text-start xs-mt-20">
-                                                {{ $invitation->ceremonies->time }}<br>
-                                                {{ $invitation->ceremonies->year }}</div>
                                         </div>
-                                    </div>
-                                    <div class="wedding-address">
-                                        <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}</h3>
-                                        <h5> {!! $invitation->ceremonies->adresse !!}</h5>
-                                    </div>
-                                @break
-
-                                @case('Civile')
-                                    <div class="wedding-card-date mt-3">
-                                        <div class="row justify-content-center">
-                                            <div class="col-md-3 theme-color text-end">Saturday<br>April</div>
-                                            <div class="col-md-2 theme-color text-center date xs-mt-20">15</div>
-                                            <div class="col-md-3 theme-color text-start xs-mt-20">At 5 pm <br>2021</div>
+                                        <div class="wedding-address">
+                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            </h3>
+                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
-                                    </div>
-                                    <div class="wedding-address">
-                                        <h3 class="uppercase my-3">Wedding Garden Plot</h3>
-                                        <h5> 17504 Carlton Cuevas Rd, Gulfport, MS, 39503</h5>
-                                    </div>
-                                @break
+                                    @break
 
-                                @case('Réligieux')
-                                    <div class="wedding-card-date mt-3">
-                                        <div class="row justify-content-center">
-                                            <div class="col-md-3 theme-color text-end">Saturday<br>April</div>
-                                            <div class="col-md-2 theme-color text-center date xs-mt-20">15</div>
-                                            <div class="col-md-3 theme-color text-start xs-mt-20">At 5 pm <br>2021</div>
+                                    @case('Civile')
+                                        <div class="wedding-card-date mt-3">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-3 theme-color text-end">
+                                                    {{ $invitation->ceremonies->day_of_week }}<br>
+                                                    {{ $invitation->ceremonies->month }}</div>
+                                                <div class="col-md-2 theme-color text-center date xs-mt-20">
+                                                    {{ $invitation->ceremonies->day }}
+                                                </div>
+                                                <div class="col-md-3 theme-color text-start xs-mt-20">
+                                                    {{ $invitation->ceremonies->time }}<br>
+                                                    {{ $invitation->ceremonies->year }}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="wedding-address">
-                                        <h3 class="uppercase my-3">Wedding Garden Plot</h3>
-                                        <h5> 17504 Carlton Cuevas Rd, Gulfport, MS, 39503</h5>
-                                    </div>
-                                @break
+                                        <div class="wedding-address">
+                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            </h3>
+                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
+                                        </div>
+                                    @break
 
-                                @default
-                            @endswitch
-
-                            @switch($invitation->status)
-                                @case('send')
-                                    <button type="button" class="btn rsvp-btn mt-10 rounded-pill" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">Confirmez votre présence</button>
-                                @break
-
-                                @case('refuse')
-                                    <div class="wedding-address">
-                                        <h3 class="uppercase my-3">
-                                            <span class="theme-color text-center">
-                                                L'invité à refusé l'invitation
-                                            </span>
-                                        </h3>
-                                    </div>
-                                @break
-
-                                @case('close')
-                                    <div class="wedding-address">
-                                        <h3 class="uppercase my-3">
-                                            <span class="theme-color text-center">
-                                                L'invitation est cloturée
-                                            </span>
-                                        </h3>
-                                    </div>
-                                @break
-
-                                @case('accept')
-                                    <button type="button" class="btn rsvp-btn mt-10  rounded" data-bs-toggle="modal"
-                                        data-bs-target="#map">Voir le QRCODE</button>
-                                @break
-
-                                @default
-                            @endswitch
-                            @if ($invitation->status != 'refuse')
-                                <button type="button" class="btn map-btn theme-color mt-10" id="decline-btn"
-                                    data-invitation-id="{{ $invitation->reference }}">Refuser l'invitation</button>
-                            @endif
-
-                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content p-5">
-                                        <form id="accept-form">
-                                            @csrf
-                                            <input type="hidden" name="reference"
-                                                value="{{ $invitation->reference }}">
-
-                                            <div class="contact-form clearfix">
-                                                <div class="mb-4">
-                                                    <label class="form-label fw-bold d-block">Choisissez vos boissons
-                                                        préférées :</label>
-
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Coca-Cola" id="boisson-coca">
-                                                        <label class="form-check-label"
-                                                            for="boisson-coca">Coca-Cola</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Fanta" id="boisson-fanta">
-                                                        <label class="form-check-label"
-                                                            for="boisson-fanta">Fanta</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Jus de Bissap" id="boisson-bissap">
-                                                        <label class="form-check-label" for="boisson-bissap">Jus de
-                                                            Bissap</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Eau" id="boisson-eau">
-                                                        <label class="form-check-label" for="boisson-eau">Eau</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Vin rouge" id="boisson-vin">
-                                                        <label class="form-check-label" for="boisson-vin">Vin
-                                                            rouge</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Coca-Cola" id="boisson-coca">
-                                                        <label class="form-check-label"
-                                                            for="boisson-coca">Coca-Cola</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Fanta" id="boisson-fanta">
-                                                        <label class="form-check-label"
-                                                            for="boisson-fanta">Fanta</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Jus de Bissap"
-                                                            id="boisson-bissap">
-                                                        <label class="form-check-label" for="boisson-bissap">Jus de
-                                                            Bissap</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Eau" id="boisson-eau">
-                                                        <label class="form-check-label" for="boisson-eau">Eau</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="boissons[]" value="Vin rouge" id="boisson-vin">
-                                                        <label class="form-check-label" for="boisson-vin">Vin
-                                                            rouge</label>
-                                                    </div>
+                                    @case('Réligieux')
+                                        <div class="wedding-card-date mt-3">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-3 theme-color text-end">
+                                                    {{ $invitation->ceremonies->day_of_week }}<br>
+                                                    {{ $invitation->ceremonies->month }}</div>
+                                                <div class="col-md-2 theme-color text-center date xs-mt-20">
+                                                    {{ $invitation->ceremonies->day }}
                                                 </div>
-                                                <div class="mb-4">
-                                                    <label for="cadeau" class="form-label fw-bold">Quel cadeau
-                                                        promettez-vous aux mariés ?</label>
-                                                    <input type="text" id="cadeau" name="cadeau"
-                                                        class="form-control"
-                                                        placeholder="Ex : Enveloppe, électroménager, etc.">
-                                                </div>
+                                                <div class="col-md-3 theme-color text-start xs-mt-20">
+                                                    {{ $invitation->ceremonies->time }}<br>
+                                                    {{ $invitation->ceremonies->year }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="wedding-address">
+                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            </h3>
+                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
+                                        </div>
+                                    @break
 
-                                                <div class="mb-4">
-                                                    <label for="message" class="form-label fw-bold">Quel est votre
-                                                        souhait pour les mariés ?</label>
-                                                    <textarea id="message" name="message" rows="5" class="form-control"
-                                                        placeholder="Un petit mot pour les mariés..."></textarea>
-                                                </div>
-                                                <div class="section-field submit-button">
-                                                    <button id="submit" name="submit" type="submit"
-                                                        value="Send" class="button rounded-pill"> Je confirme ma
-                                                        présence</button>
+                                    @default
+                                @endswitch
+                                @if (!empty($invitation->ceremonies->dressCode))
+                                    @php
+                                        $colors = collect($invitation->ceremonies->dressCode)
+                                            ->map(fn($color) => is_array($color) ? $color['hex'] ?? null : $color)
+                                            ->filter()
+                                            ->values();
+                                    @endphp
+
+                                    @if ($colors->isNotEmpty())
+                                    <div class="container mt-5">
+                                        <div class="mx-auto p-4 shadow rounded-4 bg-white text-center" style="max-width: 480px;">
+                                            <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code</h4>
+                                            <p class="text-muted mb-4">
+                                                Merci de bien vouloir respecter la palette ci-dessous pour vos tenues.
+                                            </p>
+                                            <div class="d-flex justify-content-center gap-3 mb-4">
+
+                                                {{-- <div class="d-flex justify-content-center gap-3 mt-4 mb-2 flex-wrap"> --}}
+                                                    @foreach ($colors as $hex)
+                                                        <div class="rounded-circle border"
+                                                            style="
+                                                    width: 60px;
+                                                    height: 60px;
+                                                    background-color: {{ $hex }};
+                                                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                                                "
+                                                            title="{{ $hex }}">
+                                                        </div>
+                                                    @endforeach
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
+                                    @endif
+                                @endif
+
+
+
+                                @switch($invitation->status)
+                                    @case('send')
+                                        <button type="button" class="btn rsvp-btn mt-10 rounded-pill" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal">Confirmez votre présence</button>
+                                    @break
+
+                                    @case('refuse')
+                                        <div class="wedding-address">
+                                            <h3 class="uppercase my-3">
+                                                <span class="theme-color text-center">
+                                                    L'invité à refusé l'invitation
+                                                </span>
+                                            </h3>
+                                        </div>
+                                    @break
+
+                                    @case('close')
+                                        <div class="wedding-address">
+                                            <h3 class="uppercase my-3">
+                                                <span class="theme-color text-center">
+                                                    L'invitation est cloturée
+                                                </span>
+                                            </h3>
+                                        </div>
+                                    @break
+
+                                    @case('accept')
+                                        <button type="button" class="btn rsvp-btn mt-10  rounded" data-bs-toggle="modal"
+                                            data-bs-target="#map">Voir le QRCODE</button>
+                                    @break
+
+                                    @default
+                                @endswitch
+                                @if ($invitation->status != 'refuse')
+                                    <button type="button" class="btn map-btn theme-color mt-10" id="decline-btn"
+                                        data-invitation-id="{{ $invitation->reference }}">Refuser l'invitation</button>
+                                @endif
+
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content p-5">
+                                            <form id="accept-form">
+                                                @csrf
+                                                <input type="hidden" name="reference"
+                                                    value="{{ $invitation->reference }}">
+
+                                                <div class="contact-form clearfix">
+                                                    <div class="mb-4">
+                                                        <label class="form-label fw-bold d-block">Choisissez vos
+                                                            boissons
+                                                            préférées :</label>
+
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Coca-Cola" id="boisson-coca">
+                                                            <label class="form-check-label"
+                                                                for="boisson-coca">Coca-Cola</label>
+                                                        </div>
+                                                        {{-- <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Fanta" id="boisson-fanta">
+                                                            <label class="form-check-label"
+                                                                for="boisson-fanta">Fanta</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Jus de Bissap"
+                                                                id="boisson-bissap">
+                                                            <label class="form-check-label" for="boisson-bissap">Jus
+                                                                de
+                                                                Bissap</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Eau" id="boisson-eau">
+                                                            <label class="form-check-label"
+                                                                for="boisson-eau">Eau</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Vin rouge" id="boisson-vin">
+                                                            <label class="form-check-label" for="boisson-vin">Vin
+                                                                rouge</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Coca-Cola"
+                                                                id="boisson-coca">
+                                                            <label class="form-check-label"
+                                                                for="boisson-coca">Coca-Cola</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Fanta" id="boisson-fanta">
+                                                            <label class="form-check-label"
+                                                                for="boisson-fanta">Fanta</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Jus de Bissap"
+                                                                id="boisson-bissap">
+                                                            <label class="form-check-label" for="boisson-bissap">Jus
+                                                                de
+                                                                Bissap</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Eau" id="boisson-eau">
+                                                            <label class="form-check-label"
+                                                                for="boisson-eau">Eau</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="boissons[]" value="Vin rouge" id="boisson-vin">
+                                                            <label class="form-check-label" for="boisson-vin">Vin
+                                                                rouge</label>
+                                                        </div> --}}
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <label for="cadeau" class="form-label fw-bold">Quel cadeau
+                                                            promettez-vous aux mariés ?</label>
+                                                        <input type="text" id="cadeau" name="cadeau"
+                                                            class="form-control"
+                                                            placeholder="Ex : Enveloppe, électroménager, etc.">
+                                                    </div>
+
+                                                    <div class="mb-4">
+                                                        <label for="message" class="form-label fw-bold">Quel est
+                                                            votre
+                                                            souhait pour les mariés ?</label>
+                                                        <textarea id="message" name="message" rows="5" class="form-control"
+                                                            placeholder="Un petit mot pour les mariés..."></textarea>
+                                                    </div>
+                                                    <div class="section-field submit-button">
+                                                        <button id="submit" name="submit" type="submit"
+                                                            value="Send" class="button rounded-pill"> Je confirme ma
+                                                            présence</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="map" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content p-5">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-5 text-center">
+                                                    <img src="{{ asset('assets/images/text.png') }}" width="250"
+                                                        height="250" alt="" srcset="">
+
+                                                </div>
+                                                <div class="col-md-7 text-center">
+                                                    <a href="{{ url('/invitations/' . $invitation->reference . '/download-qrcode') }}"
+                                                        class="btn rsvp-btn mt-10 mb-10" download>
+                                                        Télécharger mon QR Code
+                                                    </a>
+                                                    <h4 class="mt-10">
+                                                        🎉 Merci pour votre confirmation !
+                                                    </h4>
+                                                    <p>
+                                                        Merci de télécharger votre QR code. <br> Il est indispensable
+                                                        pour
+                                                        accéder à la cérémonie. <br> Conservez-le soigneusement.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="map" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content p-5">
-                                        <div class="row justify-content-center">
-                                            <div class="col-md-5 text-center">
-                                                <img src="{{ asset('assets/images/text.png') }}" width="250"
-                                                    height="250" alt="" srcset="">
-
-                                            </div>
-                                            <div class="col-md-7 text-center">
-                                                <a href="{{ url('/invitations/' . $invitation->reference . '/download-qrcode') }}"
-                                                    class="btn rsvp-btn mt-10 mb-10" download>
-                                                    Télécharger mon QR Code
-                                                </a>
-                                                <h4 class="mt-10">
-                                                    🎉 Merci pour votre confirmation !
-                                                </h4>
-                                                <p>
-                                                    Merci de télécharger votre QR code. <br> Il est indispensable pour
-                                                    accéder à la cérémonie. <br> Conservez-le soigneusement.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
+                            <div class="wedding-card-footer text-center  floral-bottom animate-on-load">
+                                <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/bottom-bg.png') }}">
                             </div>
-                        </div>
-                        <div class="wedding-card-footer text-center  floral-bottom animate-on-load">
-                            <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/bottom-bg.png') }}">
                         </div>
                     </div>
-                </div>
                 @endif
             </div>
         </div>

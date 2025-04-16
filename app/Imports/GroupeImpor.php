@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 class GroupeImpor implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
 {
     protected $failures = []; // Stocker les erreurs
+    protected $skippedDuplicates = []; // Stocker les doublons ignorés
     protected $ceremonieId;
 
     public function __construct($ceremonieId)
@@ -25,6 +26,11 @@ class GroupeImpor implements ToModel, WithHeadingRow, WithValidation, SkipsOnFai
 
     public function model(array $row)
     {
+        // Vérifier l'existence d'une boisson avec le même nom
+        if (Groupe::where('nom', $row['nom'])->exists()) {
+            $this->skippedDuplicates[] = $row;
+            return null; // Ignorer la ligne
+        }
         return new Groupe([
             'nom'     => $row['nom'],  // Correspond au nom de la colonne dans Excel
             'description'    => $row['description'],
@@ -63,5 +69,8 @@ public function customValidationMessages()
          return $this->failures;
      }
 
-
+     public function getSkippedDuplicates()
+     {
+         return $this->skippedDuplicates;
+     }
 }

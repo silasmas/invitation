@@ -19,10 +19,12 @@ class BoissonImportResult extends Page
     // Ajout important pour générer une URL propre
     protected static ?string $slug = 'boissons/import-result';
     public $duplicates = [];
+    public $page = "";
 
     public function mount()
     {
         $this->duplicates = session()->pull('duplicates', []);
+        $this->page = session()->pull('page');
     }
     protected function getHeaderActions(): array
     {

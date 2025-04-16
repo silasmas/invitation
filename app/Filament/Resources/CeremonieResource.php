@@ -102,13 +102,16 @@ class CeremonieResource extends Resource
                             ->dehydrateStateUsing(fn ($state) => $state) // garde juste le code hex
 
                         ])->afterStateHydrated(function (Repeater $component, $state) {
-                            // Pour convertir un tableau simple ['#ff0000', '#00ff00'] en [['hex' => '#ff0000'], ...]
                             if (is_array($state) && isset($state[0]) && is_string($state[0])) {
+                                // transforme ['#hex', '#hex2'] → [['hex' => '#hex'], ...]
                                 $component->state(
-                                    collect($state)->map(fn ($color) => ['hex' => $color])->toArray()
+                                    collect($state)
+                                        ->map(fn ($color) => ['hex' => $color])
+                                        ->toArray()
                                 );
                             }
-                        })->beforeStateDehydrated(function ($state) {
+                        })
+                        ->beforeStateDehydrated(function ($state) {
                             $colors = collect($state)->pluck('hex')->filter()->values();
 
                             if ($colors->count() < 2 || $colors->count() > 3) {
@@ -136,7 +139,9 @@ class CeremonieResource extends Resource
                         View::make('filament.components.dress-code-preview')
                         ->label('Aperçu des couleurs sélectionnées')
                         ->columnSpan(6)
-                        ->visible(fn ($get) => !empty($get('dressCode'))),
+                        ->statePath('dressCode') // ✅ ajoute ceci
+                        ->visible(fn ($get) => !empty($get('dressCode')))
+
                     ])->columnS(12),
                 ])->columnSpanFull(),
             ]);
@@ -164,7 +169,7 @@ class CeremonieResource extends Resource
                     ->sortable(),
                     ViewColumn::make('dressCode')
                     ->label('Dress Code')
-                    ->view('filament.components.dresscode'),
+                    ->view('filament.tables.columns.dress-code'),
             ])
             ->filters([
                 //

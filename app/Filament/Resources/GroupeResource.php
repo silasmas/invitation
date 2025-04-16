@@ -23,6 +23,7 @@ use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Pages\BoissonImportResult;
 use App\Filament\Resources\GroupeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\GroupeResource\RelationManagers;
@@ -33,6 +34,7 @@ class GroupeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort    = 5;
+    protected static ?string $label = 'groupes';
     public static function getLabel(): string
     {
         return 'Groupes';
@@ -171,6 +173,32 @@ class GroupeResource extends Resource
                                 ->title('Importation réussie')
                                 ->success()
                                 ->send();
+                                $doublons = $import->getSkippedDuplicates();
+                                if (! empty($doublons)) {
+                                    Log::error('Erreurs de validation détectées', ['doublons' => $doublons]);
+
+                                    $doublonMessages = collect($doublons)->map(function ($doublon, $index) {
+                                        $nom = $doublon['nom'] ?? 'Nom inconnu';
+                                        return "Ligne approximative " . ($index + 2) . " : $nom (déjà existant)";
+                                    })->implode("\n");
+                                    Log::error("Erreurs détectées : \n" . $doublonMessages);
+                                    Notification::make()
+                                        ->title('Erreurs de doublon')
+                                        // ->body($doublonMessages)
+                                        ->body(count($doublons) . ' doublon(s) ont été ignorés pendant l’import.')
+                                        ->danger()
+                                        ->send();
+        // ✅ Optionnel : rediriger vers une page avec tableau
+                                    session()->put('duplicates', $doublons);
+                                    session()->put('page', "table");
+                                    // return redirect()->route('filament.pages.boisson-import-result');
+                                    return redirect(BoissonImportResult::getUrl());
+
+                                }
+                                Notification::make()
+                                    ->title('Importation réussie')
+                                    ->success()
+                                    ->send();
                         } catch (\Exception $e) {
                             Log::error("Erreur critique lors de l'importation : " . $e->getMessage());
 

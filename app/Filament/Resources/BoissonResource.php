@@ -143,6 +143,7 @@ class BoissonResource extends Resource
                                 ->send();
 // ✅ Optionnel : rediriger vers une page avec tableau
                             session()->put('duplicates', $doublons);
+                            session()->put('page', "boisson");
                             // return redirect()->route('filament.pages.boisson-import-result');
                             return redirect(BoissonImportResult::getUrl());
 

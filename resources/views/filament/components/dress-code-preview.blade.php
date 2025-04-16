@@ -1,49 +1,22 @@
-{{-- @php
-    // $colors = $get('dressCode') ?? [];
-     // Si la vue est utilisée dans une page "show" Filament (ViewRecord), $record est accessible
-     $colors = $record->dressCode ?? [];
-    $hexColors = collect($colors)
-        ->map(fn ($color) => is_array($color) ? ($color['hex'] ?? null) : $color)
+@php
+    $colors = collect($getState())
+        ->map(fn ($color) => is_array($color) ? $color['hex'] ?? null : $color)
         ->filter()
-        ->toArray();
+        ->values();
 @endphp
 
-<div class="flex gap-2 mt-2">
-    @foreach ($hexColors as $color)
-    <div class="w-8 h-8 rounded-full border shadow relative group" style="background-color: {{ $color }}">
-        <span class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 text-xs bg-black text-white px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">
-            {{ $color }}
-        </span>
+@if ($colors->isNotEmpty())
+    <div class="flex gap-2 mt-2">
+        <h3 class="text-sm text-gray-500"> Apperçu des couleurs du dress code</h3>
+
+        @foreach ($colors as $hex)
+          <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full border shadow" style="background-color: {{ $hex }};"></div>
+                <span class="text-sm font-mono">{{ $hex }}</span>
+            </div>
+
+        @endforeach
     </div>
-    @endforeach
-</div> --}}
-@php
-    // Récupérer les données peu importe le contexte
-    $rawColors =
-         $colors ??            // si passée manuellement
-         ($getState ?? null)?->__invoke('dressCode') ??
-        ($get ?? null)?->__invoke('dressCode') ??
-        ($record->dressCode ?? []);
-
-    // Extraire les valeurs hex (dans le format [{"hex": "#xxxxxx"}])
-    $hexColors = collect($rawColors)
-        ->map(fn ($item) => is_array($item) ? ($item['hex'] ?? null) : $item)
-        ->filter()
-        ->toArray();
-        // dd($hexColors)
-        @endphp
-
-<div class="flex gap-2 mt-2">
-
-    {{-- {{ dd($hexColors)}} --}}
-    @forelse ($hexColors as $color)
-    {{-- {{ dd($color->dressCode)}} --}}
-        <div class="w-8 h-8 rounded-full border shadow relative group" style="background-color: {{ $color }}">
-            <span class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 text-xs bg-black text-white px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">
-                {{ $color }}
-            </span>
-        </div>
-    @empty
-        <span class="text-sm text-gray-500 italic">Aucune couleur définie</span>
-    @endforelse
-</div>
+@else
+    <p class="text-sm text-gray-500">Aucune couleur sélectionnée.</p>
+@endif
