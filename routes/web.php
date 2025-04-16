@@ -23,6 +23,7 @@ Route::get('/generate-qrcode', [QRCodeController::class, 'generate']);
 
 
 Route::get('/reception/{reference}', [InvitationController::class, 'voir'])->name('reception');
+
 Route::get('/invitation/{reference}', [InvitationController::class, 'show'])->name('invitation.show');
 
 Route::get('/', function () {
