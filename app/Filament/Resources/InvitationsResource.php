@@ -32,7 +32,7 @@ class InvitationsResource extends Resource
 {
     protected static ?string $model = Invitation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-envelope';
     protected static ?int $navigationSort    = 4;
     public string $messageWhatsapp           = "Bonjour {nom}, vous êtes invité à notre événement via WhatsApp !";
 

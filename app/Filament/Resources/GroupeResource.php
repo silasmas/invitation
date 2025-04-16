@@ -32,7 +32,7 @@ class GroupeResource extends Resource
 {
     protected static ?string $model = Groupe::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
     protected static ?int $navigationSort    = 5;
     protected static ?string $label = 'groupes';
     public static function getLabel(): string
