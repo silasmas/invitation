@@ -111,15 +111,18 @@
                                     @endphp
 
                                     @if ($colors->isNotEmpty())
-                                    <div class="container mt-5">
-                                        <div class="mx-auto p-4 shadow rounded-4 bg-white text-center" style="max-width: 480px;">
-                                            <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code</h4>
-                                            <p class="text-muted mb-4">
-                                                Merci de bien vouloir respecter la palette ci-dessous pour vos tenues.
-                                            </p>
-                                            <div class="d-flex justify-content-center gap-3 mb-4">
+                                        <div class="container mt-5">
+                                            <div class="mx-auto p-4 shadow rounded-4 bg-white text-center"
+                                                style="max-width: 480px;">
+                                                <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
+                                                </h4>
+                                                <p class="text-muted mb-4">
+                                                    Merci de bien vouloir respecter la palette ci-dessous pour vos
+                                                    tenues.
+                                                </p>
+                                                <div class="d-flex justify-content-center gap-3 mb-4">
 
-                                                {{-- <div class="d-flex justify-content-center gap-3 mt-4 mb-2 flex-wrap"> --}}
+                                                    {{-- <div class="d-flex justify-content-center gap-3 mt-4 mb-2 flex-wrap"> --}}
                                                     @foreach ($colors as $hex)
                                                         <div class="rounded-circle border"
                                                             style="
@@ -191,13 +194,17 @@
                                                         <label class="form-label fw-bold d-block">Choisissez vos
                                                             boissons
                                                             préférées :</label>
+                                                        @forelse ($boissons as $b)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="boissons[]" value="{{ $b->nom }}"
+                                                                    id="boisson-{{ $b->nom }}">
+                                                                <label class="form-check-label"
+                                                                    for="boisson-coca">{{ $b->nom ." (".$b->description.")"}}</label>
+                                                            </div>
+                                                        @empty
+                                                        @endforelse
 
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Coca-Cola" id="boisson-coca">
-                                                            <label class="form-check-label"
-                                                                for="boisson-coca">Coca-Cola</label>
-                                                        </div>
                                                         {{-- <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="checkbox"
                                                                 name="boissons[]" value="Fanta" id="boisson-fanta">

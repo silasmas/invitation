@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Boisson;
 use App\Models\Invitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -11,8 +12,9 @@ class InvitationController extends Controller
     public function show($reference)
     {
         $invitation = Invitation::where('reference', $reference)->firstOrFail();
+        $boissons=Boisson::get();
         // dd($invitation->ceremonies->event );
-        return view('invitation.show', compact('invitation'));
+        return view('invitation.show', compact('invitation','boissons'));
     }
     public function voir($reference)
     {
