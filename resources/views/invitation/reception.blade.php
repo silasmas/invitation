@@ -120,7 +120,6 @@
                 url: '/invitations/confirmation/',
                 type: 'POST',
                 data: formData,
-
                 success: function(response) {
                     $('#close-btnfinal').text("Validé l'invitation").attr('disabled', false);
                     $('#exampleModal').modal('hide'); // ou remplace par l'ID de ton modal
