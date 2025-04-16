@@ -13,7 +13,13 @@ class InvitationController extends Controller
     {
         $invitation = Invitation::where('reference', $reference)->firstOrFail();
         $boissons=Boisson::get();
-        // dd($invitation->ceremonies->event );
+
+         $invitation->ceremonies->dressCode;
+         $colors = collect($invitation->ceremonies->dressCode)
+                                            ->map(fn($color) => is_array($color) ? $color['hex'] ?? null : $color)
+                                            ->filter()
+                                            ->values();
+                                            // dd($colors);
         return view('invitation.show', compact('invitation','boissons'));
     }
     public function voir($reference)

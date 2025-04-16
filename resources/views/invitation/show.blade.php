@@ -104,6 +104,7 @@
                                 @endswitch
                                 @if (!empty($invitation->ceremonies->dressCode))
                                     @php
+                                    
                                         $colors = collect($invitation->ceremonies->dressCode)
                                             ->map(fn($color) => is_array($color) ? $color['hex'] ?? null : $color)
                                             ->filter()
