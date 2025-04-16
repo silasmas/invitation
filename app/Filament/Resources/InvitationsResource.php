@@ -270,7 +270,7 @@ class InvitationsResource extends Resource
                         return redirect()->route('filament.admin.pages.whatsapp');
                     })
                     ->requiresConfirmation(),
-                BulkAction::make('whatsapp_links')
+                BulkAction::make('sms_links')
                     ->label('Envoyé un SMS de rappel')
                     ->icon('heroicon-o-device-phone-mobile')
                     ->color('warning')
