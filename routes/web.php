@@ -22,7 +22,7 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::get('/generate-qrcode', [QRCodeController::class, 'generate']);
 
 
-Route::post('/reception/{reference}', [InvitationController::class, 'confirmation'])->name('reception');
+Route::get('/reception/{reference}', [InvitationController::class, 'voir'])->name('reception');
 Route::get('/invitation/{reference}', [InvitationController::class, 'show'])->name('invitation.show');
 
 Route::get('/', function () {
