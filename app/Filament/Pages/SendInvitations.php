@@ -218,7 +218,7 @@ class SendInvitations extends Page implements HasForms
                                 RichEditor::make('message')
                                     ->visible(fn($get) => $get('activeChannel') === 'whatsapp')
                                     ->label(label: 'Message personnalisé')
-                                    ->helperText("Utilisez {type} {nom} pour Mr nom sur l'invitation, {ceremony} pour le nom de la cérémonie,
+                                    ->helperText("Utilisez {categorie} {nom} pour Mr nom sur l'invitation, {ceremony} pour le nom de la cérémonie,
                                     {date} pour la date et l'huere de la ceremonie,{femme} et {homme}pour les noms des mariés, {lien} pour le lien vers l'invitation")
                                     ->reactive()                           // 🔥 Rend le champ dynamique
                                     ->hidden(fn($get) => ! $get('message')) // Cache le champ si `message` est vide
