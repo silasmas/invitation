@@ -76,7 +76,7 @@
                                 @break
 
                                 @default
-                                    <button type="button" class="btn rsvp-btn mt-10 rounded-pill" id="close-btn"
+                                    <button type="button" class="btn rsvp-btn mt-10 rounded-pill" id="close-btnfinal"
                                         data-invitation-id="{{ $invitation->reference }}">Validé l'invitation </button>
                             @endswitch
                         @else
@@ -107,7 +107,7 @@
             }
         });
         // Accepter l'invitation
-        $(document).on('click', '#close-btn', function(e) {
+        $(document).on('click', '#close-btnfinal', function(e) {
             e.preventDefault();
             $(this).text('Traitement en cours...').attr('disabled', true);
             let invitationId = $(this).data('invitation-id');
@@ -122,9 +122,9 @@
                 data: formData,
 
                 success: function(response) {
-                    $('#close-btn').text("Validé l'invitation").attr('disabled', false);
+                    $('#close-btnfinal').text("Validé l'invitation").attr('disabled', false);
                     $('#exampleModal').modal('hide'); // ou remplace par l'ID de ton modal
-                    if (response.reponse) {
+                     if (response.reponse) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Merci !',
