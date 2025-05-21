@@ -62,3 +62,6 @@ Route::get('/boissons/export-duplicates', function (\Illuminate\Http\Request $re
 
     return Excel::download(new DuplicatesExport($duplicates), 'doublons-boissons.xlsx');
 })->name('boissons.export-duplicates');
+Route::get('/symlink', action: function () {
+    return view('symlink');
+})->name('generate_symlink');
