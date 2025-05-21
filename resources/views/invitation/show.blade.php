@@ -55,7 +55,7 @@
     }
 
 
-      .dress-image {
+    .dress-image {
         max-width: 100%;
         height: auto;
         border-radius: 10px;
@@ -193,49 +193,16 @@
                                             ->values();
                                     @endphp
 
-                                    @if ($colors->isNotEmpty())
-                                        <div class="container my-5">
-                                            <div class="mx-auto p-4 shadow rounded-4 bg-white text-center"
-                                                style="max-width: 480px; width: 100%;">
 
-                                                <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
-                                                </h4>
-                                                @switch($type)
-                                                    @case('couleur')
-                                                        <p class="text-muted mb-4">
-                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
-                                                            tenues.
-                                                        </p>
-                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
-                                                            @foreach ($colors as $hex)
-                                                                <div class="d-flex flex-column align-items-center">
-                                                                    <div class="rounded-circle color-circle"
-                                                                        style="background-color: {{ $hex }};
-                                                                        border: 2px solid {{ $hex }};
-                                            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
-                                                                    </div>
-                                                                    <div class="color-label">
-                                                                        {{ strtoupper($hex) }}
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @case('tissu')
-                                                        <p class="text-muted mb-4">
-                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
-                                                            tenues.
-                                                        </p>
-                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
-                                                            <a href="#" data-bs-toggle="modal"
-                                                                data-bs-target="#tissuModal">
-                                                                <img src="{{ asset('storage/' . $tissu) }}"
-                                                                    alt="Tissu dress code" class="dress-image">
-                                                            </a>
-                                                            <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
-                                                        </div>
-                                                    @break
+                                    <div class="container my-5">
+                                        <div class="mx-auto p-4 shadow rounded-4 bg-white text-center"
+                                            style="max-width: 480px; width: 100%;">
 
-                                                    @case('tissuCouleur')
+                                            <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
+                                            </h4>
+                                            @switch($type)
+                                                @case('couleur')
+                                                    @if ($colors->isNotEmpty())
                                                         <p class="text-muted mb-4">
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
                                                             tenues.
@@ -254,6 +221,13 @@
                                                                 </div>
                                                             @endforeach
                                                         </div>
+                                                    @endif
+                                                @case('tissu')
+                                                    @if ($tissu)
+                                                        <p class="text-muted mb-4">
+                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
+                                                            tenues.
+                                                        </p>
                                                         <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
                                                             <a href="#" data-bs-toggle="modal"
                                                                 data-bs-target="#tissuModal">
@@ -262,28 +236,62 @@
                                                             </a>
                                                             <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
                                                         </div>
-                                                    @break
+                                                    @endif
+                                                @break
 
-                                                    @default
-                                                        <p class="text-muted">Aucun dress code précisé.</p>
-                                                @endswitch
-                                                <!-- Modal Bootstrap -->
-                                                <div class="modal fade" id="tissuModal" tabindex="-1"
-                                                    aria-labelledby="tissuModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                        <div class="modal-content bg-transparent border-0">
-                                                            <div class="modal-body p-0">
+                                                @case('tissuCouleur')
+                                                    @if ($couleur)
+                                                        <p class="text-muted mb-4">
+                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
+                                                            tenues.
+                                                        </p>
+                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            @foreach ($colors as $hex)
+                                                                <div class="d-flex flex-column align-items-center">
+                                                                    <div class="rounded-circle color-circle"
+                                                                        style="background-color: {{ $hex }};
+                                                                        border: 2px solid {{ $hex }};
+                                                                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                                                                    </div>
+                                                                    <div class="color-label">
+                                                                        {{ strtoupper($hex) }}
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                    @if ($tissu)
+                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            <a href="#" data-bs-toggle="modal"
+                                                                data-bs-target="#tissuModal">
                                                                 <img src="{{ asset('storage/' . $tissu) }}"
-                                                                    alt="Tissu dress code"
-                                                                    class="img-fluid rounded shadow-lg">
-                                                            </div>
+                                                                    alt="Tissu dress code" class="dress-image">
+                                                            </a>
+                                                            <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
+                                                        </div>
+                                                    @endif
+                                                @break
+
+                                                @default
+                                                    <p class="text-muted">Aucun dress code précisé.</p>
+                                            @endswitch
+                                            <!-- Modal Bootstrap -->
+                                            <div class="modal fade" id="tissuModal" tabindex="-1"
+                                                aria-labelledby="tissuModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                    <div class="modal-content bg-transparent border-0">
+                                                        <div class="modal-body p-0">
+                                                            <img src="{{ asset('storage/' . $tissu) }}"
+                                                                alt="Tissu dress code"
+                                                                class="img-fluid rounded shadow-lg">
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
+
                                         </div>
-                                    @endif
+                                    </div>
+
 
 
                                 @endif
