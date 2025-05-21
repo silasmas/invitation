@@ -1,23 +1,27 @@
 <?php
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Filament\Forms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Password;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static ?string $permission     = 'access_dashboard';
+
     protected static ?int $navigationSort = 7;
     public static function getLabel(): string
     {
@@ -27,18 +31,64 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+                Group::make([
+                    Section::make("Informations Utilisateur")->schema([
+
+                        Grid::make(2)->schema([
+                            TextInput::make('name')
+                                ->label('Nom complet')
+                                ->required()
+                                ->maxLength(255),
+
+                            TextInput::make('email')
+                                ->label('Adresse e-mail')
+                                ->email()
+                                ->required()
+                                ->unique(User::class, 'email', ignoreRecord: true)
+                                ->maxLength(255),
+                        ]),
+
+                        Grid::make(2)->schema([
+                            // TextInput::make('password')
+                            //     ->label('Mot de passe')
+                            //     ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord) // facultatif en édition
+                            //     ->confirmed()
+                            //     ->password()
+                            //     ->minLength(8)
+                            //     ->maxLength(255),
+                            TextInput::make('password')
+                                ->label('Mot de passe')
+                                ->password()
+                                ->required(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
+                                ->dehydrateStateUsing(fn($state) => filled($state) ? \Hash::make($state) : null)
+                                ->dehydrated(fn($state) => filled($state)) // Ne l'enregistre que si rempli
+                                ->confirmed()
+                                ->maxLength(255),
+
+                            TextInput::make('password_confirmation')
+                                ->label('Confirmer le mot de passe')
+                                ->password()
+                                ->required(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
+                                ->maxLength(255),
+                        ]),
+
+                        Select::make('roles')
+                            ->label('Rôle')
+                            ->required()
+                            ->preload()
+                            ->columnSpan(12)
+                                                        // ->relationship('guests', 'nom')
+                            ->relationship('roles', 'name') // fonctionne si User a `HasRoles`
+                            ->multiple(false)               // true si multi-rôles
+                                                        // ->options([
+                                                        //     'admin' => 'Administrateur',
+                                                        //     'editor' => 'Éditeur',
+                                                        //     'user' => 'Utilisateur',
+                                                        // ])
+                            ->searchable(),
+
+                    ])->columnS(12),
+                ])->columnSpanFull(),
             ]);
     }
 
@@ -46,18 +96,18 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
+                    ->label('Nom complet')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
+                    ->label('Adresse e-mail')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('roles.name')->label('Rôle(s)')->badge(),
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -67,6 +117,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -86,8 +137,20 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            // 'create' => Pages\CreateUser::route('/create'),
+            // 'edit'   => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+//     public static function canViewAny(): bool
+// {
+//     return auth()->user()?->hasRole('admin');
+// }
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->can('view_any_user');
+    }
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('create_user');
     }
 }

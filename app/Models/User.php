@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,5 +55,12 @@ class User extends Authenticatable
     {
         return auth()->user()?->hasPermissionTo('voir dashboard');
     }
-
+    // public static function booted()
+    // {
+    //     static::saving(function ($user) {
+    //         if ($user->isDirty('password')) {
+    //             $user->password = Hash::make($user->password);
+    //         }
+    //     });
+    // }
 }

@@ -19,7 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 |
 */use App\Http\Controllers\QRCodeController;
 
-Route::get('/generate-qrcode', [QRCodeController::class, 'generate']);
+Route::get('/generate-qrcode', [QRCodeController::class, 'generate'])->name('generate.qrcode');
 
 
 Route::get('/reception/{reference}', [InvitationController::class, 'voir'])->name('reception');

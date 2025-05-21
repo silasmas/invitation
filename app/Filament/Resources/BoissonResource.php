@@ -26,6 +26,7 @@ class BoissonResource extends Resource
     protected static ?string $label = 'Boisson';
     protected static ?int $navigationSort = 0;
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
+    protected static ?string $permission = 'access_dashboard';
 
     public static function form(Form $form): Form
     {

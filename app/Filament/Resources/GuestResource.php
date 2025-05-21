@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Group;
 use Maatwebsite\Excel\Facades\Excel;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
@@ -26,6 +28,7 @@ use App\Filament\Resources\GuestResource\Pages;
 class GuestResource extends Resource
 {
     protected static ?string $model = Guest::class;
+    protected static ?string $permission = 'access_dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?int $navigationSort    = 3;
@@ -81,6 +84,12 @@ class GuestResource extends Resource
                             ->columnSpan(4)
                             ->preload()
                             ->relationship('event', 'nom'),
+                            Toggle::make('all_ceremonie')
+                                    ->label('Active (pour que l’invité puisse assister à toutes les cérémonies)')
+                                    ->columnSpanFull()
+                                    ->onColor('success')
+                                    ->offColor('danger')
+                                    ->required(),
                     ])->columnS(12),
                 ])->columnSpanFull(),
             ]);
@@ -100,6 +109,9 @@ class GuestResource extends Resource
                 TextColumn::make('phone')
                     ->searchable(),
                 TextColumn::make('relation'),
+                IconColumn::make('all_ceremonie')
+                ->label('Invité à toutes les cérémonies')
+                ->boolean(),
                 TextColumn::make('whatsapp')
                     ->label('WhatsApp')
                     ->formatStateUsing(fn($record) => "https://wa.me/{$record->phone}?text=" . urlencode("Bonjour {$record->nom}, vous êtes invité à notre événement !"))

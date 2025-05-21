@@ -1,5 +1,29 @@
 @include('parties.entete')
 
+<style>
+
+
+    @media (max-width: 575.98px) { /* Mobile */
+        .color-circle {
+            width: 45px;
+            height: 45px;
+        }
+    }
+
+    @media (min-width: 576px) and (max-width: 991.98px) { /* Tablette */
+        .color-circle {
+            width: 60px;
+            height: 60px;
+        }
+    }
+
+    @media (min-width: 992px) { /* Desktop */
+        .color-circle {
+            width: 70px;
+            height: 70px;
+        }
+    }
+</style>
 
 <div class="animate-on-load" style="text-align:center; padding:10px 20px;">
     <section class="wedding-card page-section-ptb">
@@ -104,7 +128,7 @@
                                 @endswitch
                                 @if (!empty($invitation->ceremonies->dressCode))
                                     @php
-                                    
+
                                         $colors = collect($invitation->ceremonies->dressCode)
                                             ->map(fn($color) => is_array($color) ? $color['hex'] ?? null : $color)
                                             ->filter()
@@ -112,33 +136,31 @@
                                     @endphp
 
                                     @if ($colors->isNotEmpty())
-                                        <div class="container mt-5">
+                                        <div class="container my-5">
                                             <div class="mx-auto p-4 shadow rounded-4 bg-white text-center"
-                                                style="max-width: 480px;">
+                                                style="max-width: 480px; width: 100%;">
+
                                                 <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
                                                 </h4>
                                                 <p class="text-muted mb-4">
                                                     Merci de bien vouloir respecter la palette ci-dessous pour vos
                                                     tenues.
                                                 </p>
-                                                <div class="d-flex justify-content-center gap-3 mb-4">
 
-                                                    {{-- <div class="d-flex justify-content-center gap-3 mt-4 mb-2 flex-wrap"> --}}
+                                                <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
                                                     @foreach ($colors as $hex)
-                                                        <div class="rounded-circle border"
-                                                            style="
-                                                    width: 60px;
-                                                    height: 60px;
-                                                    background-color: {{ $hex }};
-                                                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-                                                "
-                                                            title="{{ $hex }}">
+                                                        <div class="rounded-circle color-circle"
+                                                            style="background-color: {{ $hex }};
+                                                            border: 2px solid {{ $hex }};
+                                box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
                                                         </div>
                                                     @endforeach
                                                 </div>
                                             </div>
                                         </div>
                                     @endif
+
+
                                 @endif
 
 
@@ -177,6 +199,7 @@
                                     @default
                                 @endswitch
                                 @if ($invitation->status != 'refuse')
+
                                     <button type="button" class="btn map-btn theme-color mt-10" id="decline-btn"
                                         data-invitation-id="{{ $invitation->reference }}">Refuser l'invitation</button>
                                 @endif
@@ -201,70 +224,10 @@
                                                                     name="boissons[]" value="{{ $b->nom }}"
                                                                     id="boisson-{{ $b->nom }}">
                                                                 <label class="form-check-label"
-                                                                    for="boisson-coca">{{ $b->nom ." (".$b->description.")"}}</label>
+                                                                    for="boisson-coca">{{ $b->nom . ' (' . $b->description . ')' }}</label>
                                                             </div>
                                                         @empty
                                                         @endforelse
-
-                                                        {{-- <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Fanta" id="boisson-fanta">
-                                                            <label class="form-check-label"
-                                                                for="boisson-fanta">Fanta</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Jus de Bissap"
-                                                                id="boisson-bissap">
-                                                            <label class="form-check-label" for="boisson-bissap">Jus
-                                                                de
-                                                                Bissap</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Eau" id="boisson-eau">
-                                                            <label class="form-check-label"
-                                                                for="boisson-eau">Eau</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Vin rouge" id="boisson-vin">
-                                                            <label class="form-check-label" for="boisson-vin">Vin
-                                                                rouge</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Coca-Cola"
-                                                                id="boisson-coca">
-                                                            <label class="form-check-label"
-                                                                for="boisson-coca">Coca-Cola</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Fanta" id="boisson-fanta">
-                                                            <label class="form-check-label"
-                                                                for="boisson-fanta">Fanta</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Jus de Bissap"
-                                                                id="boisson-bissap">
-                                                            <label class="form-check-label" for="boisson-bissap">Jus
-                                                                de
-                                                                Bissap</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Eau" id="boisson-eau">
-                                                            <label class="form-check-label"
-                                                                for="boisson-eau">Eau</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="boissons[]" value="Vin rouge" id="boisson-vin">
-                                                            <label class="form-check-label" for="boisson-vin">Vin
-                                                                rouge</label>
-                                                        </div> --}}
                                                     </div>
                                                     <div class="mb-4">
                                                         <label for="cadeau" class="form-label fw-bold">Quel cadeau

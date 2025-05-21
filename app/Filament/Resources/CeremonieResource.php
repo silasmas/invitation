@@ -24,6 +24,7 @@ use App\Filament\Resources\CeremonieResource\Pages;
 class CeremonieResource extends Resource
 {
     protected static ?string $model = Ceremonie::class;
+    protected static ?string $permission = 'access_dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
     protected static ?int $navigationSort    = 2;

@@ -23,6 +23,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
@@ -31,6 +32,7 @@ use Filament\Tables\Table;
 class InvitationsResource extends Resource
 {
     protected static ?string $model = Invitation::class;
+    protected static ?string $permission = 'access_dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
     protected static ?int $navigationSort    = 4;
@@ -46,16 +48,7 @@ class InvitationsResource extends Resource
             ->schema([
                 Group::make([
                     Section::make("Formulaire")->schema([
-                        Select::make('categorie')
-                            ->label('Catégorie')
-                            ->columnSpan(4)
-                            ->required()
-                            ->options([
-                                'Couple' => 'Couple',
-                                'Mme'    => 'Madame',
-                                'Mr'     => 'Monsier',
-                                'Mlle'   => 'Mademoiselle',
-                            ]),
+
                         Select::make('guest_id')
                             ->label(label: 'Invité')
                             ->searchable()
@@ -72,7 +65,6 @@ class InvitationsResource extends Resource
                         TagsInput::make('boissons')
                             ->label('Les Boissons')
                             ->placeholder('vous pouvez ajouté pluslieurs boisson...')
-                            ->required()
                             ->separator(',')
                             ->saveRelationshipsWhenHidden() // Sauvegarde même si le champ est caché
                             ->columnSpan(4),
@@ -85,6 +77,16 @@ class InvitationsResource extends Resource
                                 'send'    => 'Envoyé',
                                 'accept'  => 'Accepté',
                                 'refuse'  => 'Refusé',
+                            ]),
+                        Select::make('moyen')
+                            ->label('Moyen')
+                            ->columnSpan(4)
+                            ->required()
+                            ->options([
+                                'enDure' => 'En dure',
+                                'whatsapp'    => 'Whatsapp',
+                                'sms'  => 'Email',
+                                'mail'  => 'SMS',
                             ]),
                         TextInput::make('cadeau')
                             ->label("Cadeau")
@@ -110,6 +112,24 @@ class InvitationsResource extends Resource
                     ->searchable(),
                 TextColumn::make('guests.nom')
                     ->label("Invité")
+                    ->searchable(),
+                    TextColumn::make('moyen')
+                    ->label('Moyen')
+                    ->badge() // active le badge
+                    ->color(fn(string $state): string => match ($state) {
+                        'enDure'                         => 'warning',
+                        'whatsapp'                            => 'success',
+                        'email'                          => 'info',
+                        'sms'                          => 'primary',
+                        default                           => 'gray',
+                    })->formatStateUsing(fn(string $state) => match ($state) {
+                    'enDure'                              => 'En dure',
+                    'whatsapp'                                 => 'Whatsapp',
+                    'email'                               => 'Email',
+                    'sms'                               => 'SMS',
+                    default                                => ucfirst($state)
+                })
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('reference')
                     ->label("Référence")
@@ -151,6 +171,12 @@ class InvitationsResource extends Resource
                 IconColumn::make('confirmation')
                     ->label("Etat")
                     ->boolean(),
+                // ImageColumn::make('qr_code')
+                //     ->label('QR Code')
+                //     ->getStateUsing(fn($record) => 'assets/images/text.png')
+                //     ->visibility('visible')
+                //     ->height(60)
+                //     ->circular(false),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -196,12 +222,22 @@ class InvitationsResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->searchable() // ✅ active la recherche globale
             ->actions([
+                Action::make('qr_code')
+                ->label('QR Code')
+                ->color('success') // options : primary, danger, warning, success, gray
+                ->icon('heroicon-o-arrow-down-on-square')
+                ->button() // rend le bouton plus visible (vs. icône simple)
+                ->url(fn($record) => route('generate.qrcode', ['id' => $record->id]))
+                ->openUrlInNewTab()
+                ->disabled(fn ($record) => !in_array($record->status, ['send', 'accept','pendding'])),
+
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),
-            ])->headerActions([
+
+                    ])->headerActions([
             Action::make('statistiques')
                 ->label(fn() => '📊 ' . \App\Models\Invitation::count() . ' invitations au total')
                 ->disabled() // juste pour l'afficher
@@ -306,7 +342,7 @@ class InvitationsResource extends Resource
                         MessageHelper::sendSms($guest->phone, $message);
                     }\Filament\Notifications\Notification::make()
                         ->title('SMS envoyés')
-                        ->body('Les messages ont été envoyés aux '.$records->count().' invités sélectionnés.')
+                        ->body('Les messages ont été envoyés aux ' . $records->count() . ' invités sélectionnés.')
                         ->success()
                         ->send();
                 })

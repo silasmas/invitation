@@ -15,6 +15,8 @@ class InvitationStats extends BaseWidget
         $acceptees = Invitation::where('status', 'accept')->count();
         $refusees = Invitation::where('status', 'refuse')->count();
         $fermer = Invitation::where('status', 'close')->count();
+        $enDure = Invitation::where('moyen', 'enDure')->count();
+        $virtuel = Invitation::where('moyen',"!=", 'enDure')->count();
 
         $enAttente = $total - $envoyees - $acceptees - $refusees-$fermer;
 
@@ -42,6 +44,12 @@ class InvitationStats extends BaseWidget
                 Stat::make('📨 Colturer', $fermer)
                     ->description("Déjà cloturées")
                     ->color('success'),
+                Stat::make('📨 En dure', $enDure)
+                    ->description("Invitation en dure")
+                    ->color('warning'),
+                Stat::make('Virtuel', $fermer)
+                    ->description("Invitation virtuel")
+                    ->color('info'),
             ];
         }
         protected ?string $heading = '📨 Invitations';

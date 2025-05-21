@@ -31,6 +31,7 @@ use App\Filament\Resources\GroupeResource\RelationManagers;
 class GroupeResource extends Resource
 {
     protected static ?string $model = Groupe::class;
+    protected static ?string $permission = 'access_dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
     protected static ?int $navigationSort    = 5;

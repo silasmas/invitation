@@ -33,6 +33,7 @@ use Illuminate\Support\Str;
 class SendInvitations extends Page implements HasForms
 {
     use InteractsWithForms;
+    protected static ?string $permission = 'access_stats_dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
     protected static string $view            = 'filament.pages.send-invitations';
@@ -120,6 +121,7 @@ class SendInvitations extends Page implements HasForms
             'whatsapp' => $this->envoyerViaWhatsapp($guests,$this->message),
             'email' => $this->envoyerViaEmail($guests),
             'sms' => $this->envoyerViaSms($guests),
+            'enDure' => $this->envoyerEnDure($guests),
         };
 
         return;
@@ -161,6 +163,7 @@ class SendInvitations extends Page implements HasForms
             Radio::make('activeChannel')
                 ->label('Canal d’envoi')
                 ->options([
+                    'enDure' => 'En dure',
                     'whatsapp' => 'WhatsApp',
                     'email'    => 'Email',
                     'sms'      => 'SMS (Juste pour rappeler les invités)',
@@ -339,6 +342,35 @@ class SendInvitations extends Page implements HasForms
                                     ->columnSpanFull(),
                             ])->columnS(12),
                         ]),
+                    Tabs\Tab::make('En dure')
+                        ->visible(fn($get) => $get('activeChannel') === 'enDure')
+                        ->schema([
+                            Section::make("")->schema([
+                                Select::make('selectedGuests')
+                                    ->label('Invités (Tous les invités)')
+                                    ->columnSpan(12)
+                                    ->options(
+                                        Guest::whereNotNull('nom')
+                                            ->pluck('nom', 'id')
+                                    )
+                                    ->searchable()
+                                    ->multiple()
+                                    ->required(),
+                                Select::make('ceremonieId')
+                                    ->label('Choisir une cérémonie')
+                                    ->options(Ceremonie::pluck('nom', 'id'))
+                                    ->searchable()
+                                    ->reactive() // 🔥 Rend le champ dynamique
+                                    ->columnSpan(6)
+                                    ->required(),
+                                Select::make('table')
+                                    ->label('Choisir une table')
+                                    ->options(Groupe::pluck('nom', 'id'))
+                                    ->searchable()
+                                    ->columnSpan(6)
+                                    ->required(),
+                            ])->columnS(12),
+                        ]),
 
                 ]),
 
@@ -436,6 +468,16 @@ class SendInvitations extends Page implements HasForms
         ✉️ Emails envoyés : {$emailsEnvoyes} (erreurs : {$emailsErreurs})")
             ->send();
     }
+    public function envoyerEnDure($guests)
+    {
+
+        // ✅ Notification globale
+        Notification::make()
+            ->title('Résultat des envois')
+            ->success()
+            ->body("Enregistrer")
+            ->send();
+    }
     public function envoyerViaSms($guests)
     {
         // dd($this->smsCount);
@@ -498,15 +540,22 @@ class SendInvitations extends Page implements HasForms
                     $reference = "INV-" . date('Ymd') . "-" . strtoupper(Str::random(6));
                 } while (Invitation::where('reference', $reference)->exists());
                 $msg = "";
+                $moyen = "";
                 switch ($this->activeChannel) {
                     case 'whatsapp':
                         $msg = $this->message;
+                         $moyen = "whatsapp";
                         break;
                     case 'email':
                         $msg = $this->message;
+                         $moyen = "email";
                         break;
                     case 'sms':
                         $msg = $this->messageSms;
+                         $moyen = "sms";
+                        break;
+                    case 'enDure':
+                         $moyen = "enDure";
                         break;
                 }
                 $now          = Carbon::now()->startOfDay();
@@ -547,6 +596,7 @@ class SendInvitations extends Page implements HasForms
                         'status'    => 'send',
                         'message'   => $customMessage,
                         'reference' => $reference,
+                        'moyen' => $moyen,
                     ]
                 );
             }

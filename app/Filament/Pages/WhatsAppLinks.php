@@ -9,6 +9,8 @@ use Filament\Notifications\Notification;
 
 class WhatsAppLinks extends Page
 {
+    protected static ?string $permission = 'access_stats_dashboard';
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view  = 'filament.pages.whatsapp-links';

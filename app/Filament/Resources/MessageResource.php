@@ -24,6 +24,7 @@ class MessageResource extends Resource
     protected static ?string $model = Message::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static ?string $permission = 'access_dashboard';
     protected static ?int $navigationSort = 6;
     public static function getLabel(): string
     {

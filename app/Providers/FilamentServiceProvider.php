@@ -25,5 +25,9 @@ class FilamentServiceProvider extends ServiceProvider
                 // Tu peux personnaliser ici selon les rôles
             ]);
         });
+        // Filament::registerWidgets([
+        //     StatsOverview::class => fn () => auth()->user()?->can('view_dashboard'),
+        // ]);
+        
     }
 }
