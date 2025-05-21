@@ -16,12 +16,13 @@ class InvitationController extends Controller
 
          $invitation->ceremonies->dressCode;
          $tissu=$invitation->ceremonies->tissu;
+         $type=$invitation->ceremonies->typeDressecode;
          $colors = collect($invitation->ceremonies->dressCode)
                                             ->map(fn($color) => is_array($color) ? $color['hex'] ?? null : $color)
                                             ->filter()
                                             ->values();
                                         //   dd($tissu);
-        return view('invitation.show', compact('invitation','boissons', 'colors','tissu'));
+        return view('invitation.show', compact('invitation','boissons', 'colors','tissu','type'));
     }
     public function voir($reference)
     {

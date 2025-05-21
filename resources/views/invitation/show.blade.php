@@ -200,7 +200,7 @@
 
                                                 <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
                                                 </h4>
-                                                @switch($invitation->ceremonies->typeDressecode)
+                                                @switch($type)
                                                     @case('couleur')
                                                         <p class="text-muted mb-4">
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
