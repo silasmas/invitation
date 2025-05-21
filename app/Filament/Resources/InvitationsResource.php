@@ -227,7 +227,7 @@ class InvitationsResource extends Resource
                 ->color('success') // options : primary, danger, warning, success, gray
                 ->icon('heroicon-o-arrow-down-on-square')
                 ->button() // rend le bouton plus visible (vs. icône simple)
-                ->url(fn($record) => route('generate.qrcode', ['id' => $record->id]))
+                ->url(fn($record) => route('generate.qrcode', ['id' => $record->reference]))
                 ->openUrlInNewTab()
                 ->disabled(fn ($record) => !in_array($record->status, ['send', 'accept','pendding'])),
 
