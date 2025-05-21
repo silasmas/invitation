@@ -194,30 +194,29 @@
                                     @endphp
 
 
-                                    <div class="container my-5">
+                                   <div class="container my-5">
                                         <div class="mx-auto p-4 shadow rounded-4 bg-white text-center"
                                             style="max-width: 480px; width: 100%;">
 
                                             <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
                                             </h4>
+
                                             @switch($type)
                                                 @case('couleur')
-                                                    @if ($colors->isNotEmpty())
+                                                    @if ($couleurs->isNotEmpty())
                                                         <p class="text-muted mb-4">
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
                                                             tenues.
                                                         </p>
                                                         <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
-                                                            @foreach ($colors as $hex)
+                                                            @foreach ($couleurs as $color)
                                                                 <div class="d-flex flex-column align-items-center">
                                                                     <div class="rounded-circle color-circle"
-                                                                        style="background-color: {{ $hex }};
-                                                                        border: 2px solid {{ $hex }};
+                                                                        style="background-color: {{ $color['hex'] }};
+                                                                        border: 2px solid {{ $color['hex'] }};
                                                                         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
                                                                     </div>
-                                                                    <div class="color-label">
-                                                                        {{ strtoupper($hex) }}
-                                                                    </div>
+                                                                   <div class="text-muted small mt-1">{{  $color['name'] }}</div>
                                                                 </div>
                                                             @endforeach
                                                         </div>
@@ -240,22 +239,20 @@
                                                 @break
 
                                                 @case('tissuCouleur')
-                                                    @if ($couleur)
+                                                    @if ($couleurs)
                                                         <p class="text-muted mb-4">
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
                                                             tenues.
                                                         </p>
                                                         <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
-                                                            @foreach ($colors as $hex)
+                                                            @foreach ($couleurs as $color)
                                                                 <div class="d-flex flex-column align-items-center">
                                                                     <div class="rounded-circle color-circle"
-                                                                        style="background-color: {{ $hex }};
-                                                                        border: 2px solid {{ $hex }};
+                                                                        style="background-color: {{ $color['hex']}};
+                                                                        border: 2px solid {{$color['hex']}};
                                                                         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
                                                                     </div>
-                                                                    <div class="color-label">
-                                                                        {{ strtoupper($hex) }}
-                                                                    </div>
+                                                                    <div class="text-muted small mt-1">{{  $color['name'] }}</div>
                                                                 </div>
                                                             @endforeach
                                                         </div>

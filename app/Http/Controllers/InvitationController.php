@@ -12,17 +12,31 @@ class InvitationController extends Controller
     public function show($reference)
     {
         $invitation = Invitation::where('reference', $reference)->firstOrFail();
-        $boissons=Boisson::get();
+        $boissons   = Boisson::get();
 
-         $invitation->ceremonies->dressCode;
-         $tissu=$invitation->ceremonies->tissu;
-         $type=$invitation->ceremonies->typeDressecode;
-         $colors = collect($invitation->ceremonies->dressCode)
-                                            ->map(fn($color) => is_array($color) ? $color['hex'] ?? null : $color)
-                                            ->filter()
-                                            ->values();
-                                        // dd($type);
-        return view('invitation.show', compact('invitation','boissons', 'colors','tissu','type'));
+        $invitation->ceremonies->dressCode;
+        $tissu  = $invitation->ceremonies->tissu;
+        $type   = $invitation->ceremonies->typeDressecode;
+        $couleurs = collect($invitation->ceremonies->dressCode)
+            ->map(function ($color) {
+                if (is_array($color)) {
+                    return [
+                        'hex'  => $color['hex'] ?? '#000000',
+                        'name' => $color['name'] ?? strtoupper($color['hex'] ?? '#000000'),
+                    ];
+                }
+
+                // Cas où c'est juste une string hex
+                return [
+                    'hex'  => $color,
+                    'name' => strtoupper($color),
+                ];
+            })
+            ->filter(fn($item) => ! empty($item['hex']))
+            ->values();
+
+        // dd($colors);
+        return view('invitation.show', compact('invitation', 'boissons', 'couleurs', 'tissu', 'type'));
     }
     public function voir($reference)
     {
@@ -120,7 +134,7 @@ class InvitationController extends Controller
             ]);
             return response()->json([
                 'reponse' => false,
-                'message' => "La cérémonie aura lieu le " .$dateCeremonie->translatedFormat('l d F Y'). " (dans $joursRestant).",
+                'message' => "La cérémonie aura lieu le " . $dateCeremonie->translatedFormat('l d F Y') . " (dans $joursRestant).",
             ]);
         }
 
