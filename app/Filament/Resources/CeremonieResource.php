@@ -1,29 +1,29 @@
 <?php
 namespace App\Filament\Resources;
 
-use Filament\Tables;
-use Filament\Forms\Form;
+use App\Filament\Resources\CeremonieResource\Pages;
 use App\Models\Ceremonie;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\View;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Repeater;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ViewColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
-
-use Illuminate\Validation\ValidationException;
-use App\Filament\Resources\CeremonieResource\Pages;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
+use Filament\Tables\Table;
 
 class CeremonieResource extends Resource
 {
-    protected static ?string $model = Ceremonie::class;
+    protected static ?string $model      = Ceremonie::class;
     protected static ?string $permission = 'access_dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
@@ -90,58 +90,77 @@ class CeremonieResource extends Resource
                         Select::make('event_id')
                             ->required()
                             ->label(label: 'Evenement')
-                            ->columnSpan(12)
+                            ->columnSpan(6)
                             ->preload()
                             ->relationship('event', 'nom'),
-                        Repeater::make('dressCode')
-                        ->label('Couleurs du dress code')
-                        ->schema([
-                            ColorPicker::make('hex')
-                            ->label('Couleur')
+                        Select::make('typeDressecode')
                             ->required()
-                            ->rule('regex:/^#[0-9A-Fa-f]{6}$/')
-                            ->dehydrateStateUsing(fn ($state) => $state) // garde juste le code hex
+                            ->label(label: 'Type de dress code')
+                            ->options([
+                                'tissu'        => 'Tissu',
+                                'couleur'      => 'Couleur',
+                                'tissuCouleur' => 'Tissu et couleur',
+                            ])
+                            ->columnSpan(6),
+                        FileUpload::make('tissu')
+                            ->columnSpan(12)
+                            ->label('Tissu en image')
+                            ->directory('tissu')
+                            ->imageEditor()
+                            ->imageEditorMode(2)
+                            ->downloadable()
+                            ->image()
+                            ->maxSize(3024)
+                            ->previewable(true),
+                        Repeater::make('dressCode')
+                            ->label('Couleurs du dress code')
+                            ->schema([
+                                ColorPicker::make('hex')
+                                    ->label('Couleur')
+                                    ->required()
+                                    ->rule('regex:/^#[0-9A-Fa-f]{6}$/')
+                                    ->dehydrateStateUsing(fn($state) => $state), // garde juste le code hex
 
-                        ])->afterStateHydrated(function (Repeater $component, $state) {
+                            ])->afterStateHydrated(function (Repeater $component, $state) {
                             if (is_array($state) && isset($state[0]) && is_string($state[0])) {
                                 // transforme ['#hex', '#hex2'] → [['hex' => '#hex'], ...]
                                 $component->state(
                                     collect($state)
-                                        ->map(fn ($color) => ['hex' => $color])
+                                        ->map(fn($color) => ['hex' => $color])
                                         ->toArray()
                                 );
                             }
                         })
-                        ->beforeStateDehydrated(function ($state) {
-                            $colors = collect($state)->pluck('hex')->filter()->values();
+                            ->beforeStateDehydrated(function ($state) {
+                                $colors = collect($state)->pluck('hex')->filter()->values();
 
-                            if ($colors->count() < 2 || $colors->count() > 3) {
-                                throw \Illuminate\Validation\ValidationException::withMessages([
-                                    'dressCode' => 'Tu dois choisir entre 2 et 3 couleurs.',
-                                ]);
-                            }
+                                if ($colors->count() < 2 || $colors->count() > 3) {
+                                    throw \Illuminate\Validation\ValidationException::withMessages([
+                                        'dressCode' => 'Tu dois choisir entre 2 et 3 couleurs.',
+                                    ]);
+                                }
 
-                            if ($colors->duplicates()->isNotEmpty()) {
-                                throw \Illuminate\Validation\ValidationException::withMessages([
-                                    'dressCode' => 'Les couleurs doivent être uniques.',
-                                ]);
-                            }
+                                if ($colors->duplicates()->isNotEmpty()) {
+                                    throw \Illuminate\Validation\ValidationException::withMessages([
+                                        'dressCode' => 'Les couleurs doivent être uniques.',
+                                    ]);
+                                }
 
-                            return $colors->toArray(); // propre, hex only
-                        })
-                        ->minItems(1)
-                        ->maxItems(3)
-                        ->reorderable(false)
-                        ->addActionLabel('Ajouter une couleur')
-                        ->columnSpan(6)
-                        ->required()
-                        ->dehydrated(true) // important pour que le champ soit envoyé
-                        ->statePath('dressCode')->validationAttribute('couleurs du dress code'),
+                                return $colors->toArray(); // propre, hex only
+                            })
+                            ->minItems(1)
+                            ->maxItems(3)
+                            ->reorderable(false)
+                            ->addActionLabel('Ajouter une couleur')
+                            ->columnSpan(6)
+                            ->required()
+                            ->dehydrated(true) // important pour que le champ soit envoyé
+                            ->statePath('dressCode')->validationAttribute('couleurs du dress code'),
                         View::make('filament.components.dress-code-preview')
-                        ->label('Aperçu des couleurs sélectionnées')
-                        ->columnSpan(6)
-                        ->statePath('dressCode') // ✅ ajoute ceci
-                        ->visible(fn ($get) => !empty($get('dressCode')))
+                            ->label('Aperçu des couleurs sélectionnées')
+                            ->columnSpan(6)
+                            ->statePath('dressCode') // ✅ ajoute ceci
+                            ->visible(fn($get) => ! empty($get('dressCode'))),
 
                     ])->columnS(12),
                 ])->columnSpanFull(),
@@ -165,10 +184,16 @@ class CeremonieResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('tissu')
+                    ->label('Tissu')
+                    // ->disk('storage')      // ou 'storage' selon ton système de fichiers
+                    ->height(60)          // hauteur de l’image
+                    ->width(60)           // largeur de l’image
+                    ->circular(),         // optionnel : rend l’image ronde
                 TextColumn::make('event.nom')
                     ->numeric()
                     ->sortable(),
-                    ViewColumn::make('dressCode')
+                ViewColumn::make('dressCode')
                     ->label('Dress Code')
                     ->view('filament.tables.columns.dress-code'),
             ])

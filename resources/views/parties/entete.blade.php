@@ -33,6 +33,7 @@
 
 <!-- Responsive -->
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/site/css/responsive.css') }} " />
+
 {{-- <style>
     body { margin: 0; font-family: 'Tangerine', cursive; }
     body.block-scroll { overflow: hidden; }

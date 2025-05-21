@@ -1,27 +1,85 @@
 @include('parties.entete')
 
 <style>
+    .color-circle {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
+    .color-circle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
 
-    @media (max-width: 575.98px) { /* Mobile */
+    .color-label {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.3rem;
+    }
+
+    @media (max-width: 575.98px) {
+
+        /* Mobile */
         .color-circle {
             width: 45px;
             height: 45px;
+            box-shadow: none;
         }
     }
 
-    @media (min-width: 576px) and (max-width: 991.98px) { /* Tablette */
+    @media (min-width: 576px) and (max-width: 991.98px) {
+
+        /* Tablette */
         .color-circle {
             width: 60px;
             height: 60px;
+            box-shadow: none;
         }
     }
 
-    @media (min-width: 992px) { /* Desktop */
+    @media (min-width: 992px) {
+
+        /* Desktop */
         .color-circle {
             width: 70px;
             height: 70px;
         }
+
+        .color-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+
+      .dress-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .dress-image:hover {
+        transform: scale(1.01);
+    }
+
+    .click-to-zoom {
+        font-size: 0.85rem;
+        color: #777;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    /* Modal image adapts to screen size */
+    .modal-body img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
     }
 </style>
 
@@ -142,20 +200,87 @@
 
                                                 <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
                                                 </h4>
-                                                <p class="text-muted mb-4">
-                                                    Merci de bien vouloir respecter la palette ci-dessous pour vos
-                                                    tenues.
-                                                </p>
-
-                                                <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
-                                                    @foreach ($colors as $hex)
-                                                        <div class="rounded-circle color-circle"
-                                                            style="background-color: {{ $hex }};
-                                                            border: 2px solid {{ $hex }};
-                                box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                                                @switch($invitation->ceremonies->typeDressecode)
+                                                    @case('couleur')
+                                                        <p class="text-muted mb-4">
+                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
+                                                            tenues.
+                                                        </p>
+                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            @foreach ($colors as $hex)
+                                                                <div class="d-flex flex-column align-items-center">
+                                                                    <div class="rounded-circle color-circle"
+                                                                        style="background-color: {{ $hex }};
+                                                                        border: 2px solid {{ $hex }};
+                                            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                                                                    </div>
+                                                                    <div class="color-label">
+                                                                        {{ strtoupper($hex) }}
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
                                                         </div>
-                                                    @endforeach
+                                                    @case('tissu')
+                                                        <p class="text-muted mb-4">
+                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
+                                                            tenues.
+                                                        </p>
+                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            <a href="#" data-bs-toggle="modal"
+                                                                data-bs-target="#tissuModal">
+                                                                <img src="{{ asset('storage/' . $tissu) }}"
+                                                                    alt="Tissu dress code" class="dress-image">
+                                                            </a>
+                                                            <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
+                                                        </div>
+                                                    @break
+
+                                                    @case('tissuCouleur')
+                                                        <p class="text-muted mb-4">
+                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
+                                                            tenues.
+                                                        </p>
+                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            @foreach ($colors as $hex)
+                                                                <div class="d-flex flex-column align-items-center">
+                                                                    <div class="rounded-circle color-circle"
+                                                                        style="background-color: {{ $hex }};
+                                                                        border: 2px solid {{ $hex }};
+                                            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                                                                    </div>
+                                                                    <div class="color-label">
+                                                                        {{ strtoupper($hex) }}
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            <a href="#" data-bs-toggle="modal"
+                                                                data-bs-target="#tissuModal">
+                                                                <img src="{{ asset('storage/' . $tissu) }}"
+                                                                    alt="Tissu dress code" class="dress-image">
+                                                            </a>
+                                                            <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
+                                                        </div>
+                                                    @break
+
+                                                    @default
+                                                        <p class="text-muted">Aucun dress code précisé.</p>
+                                                @endswitch
+                                                <!-- Modal Bootstrap -->
+                                                <div class="modal fade" id="tissuModal" tabindex="-1"
+                                                    aria-labelledby="tissuModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                        <div class="modal-content bg-transparent border-0">
+                                                            <div class="modal-body p-0">
+                                                                <img src="{{ asset('storage/' . $tissu) }}"
+                                                                    alt="Tissu dress code"
+                                                                    class="img-fluid rounded shadow-lg">
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     @endif
@@ -199,9 +324,9 @@
                                     @default
                                 @endswitch
                                 @if ($invitation->status != 'refuse')
-
                                     <button type="button" class="btn map-btn theme-color mt-10" id="decline-btn"
-                                        data-invitation-id="{{ $invitation->reference }}">Refuser l'invitation</button>
+                                        data-invitation-id="{{ $invitation->reference }}">Refuser
+                                        l'invitation</button>
                                 @endif
 
                                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
