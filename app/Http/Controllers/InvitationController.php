@@ -21,7 +21,7 @@ class InvitationController extends Controller
                                             ->map(fn($color) => is_array($color) ? $color['hex'] ?? null : $color)
                                             ->filter()
                                             ->values();
-                                        //   dd($tissu);
+                                        dd($type);
         return view('invitation.show', compact('invitation','boissons', 'colors','tissu','type'));
     }
     public function voir($reference)

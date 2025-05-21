@@ -246,7 +246,7 @@
                                                                     <div class="rounded-circle color-circle"
                                                                         style="background-color: {{ $hex }};
                                                                         border: 2px solid {{ $hex }};
-                                            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                                                                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
                                                                     </div>
                                                                     <div class="color-label">
                                                                         {{ strtoupper($hex) }}
