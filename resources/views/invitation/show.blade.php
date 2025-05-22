@@ -58,6 +58,7 @@
     .dress-image {
         max-width: 100%;
         height: auto;
+        width: 100%;
         border-radius: 10px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         cursor: pointer;
@@ -200,6 +201,7 @@
 
                                             <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
                                             </h4>
+
 
                                             @switch($type)
                                                 @case('couleur')
