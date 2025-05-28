@@ -1,33 +1,34 @@
 <?php
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InvitationsResource\Pages;
-use App\Filament\Widgets\InvitationStats;
-use App\Helpers\MessageHelper;
-use App\Models\Invitation;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Invitation;
+use Filament\Tables\Table;
+use App\Helpers\MessageHelper;
+use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use App\Filament\Widgets\InvitationStats;
+use Filament\Forms\Components\RichEditor;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
+use Filament\Tables\Actions\BulkActionGroup;
+use App\Filament\Resources\InvitationsResource\Pages;
 
 class InvitationsResource extends Resource
 {
@@ -91,6 +92,25 @@ class InvitationsResource extends Resource
                         TextInput::make('cadeau')
                             ->label("Cadeau")
                             ->columnSpan(4),
+                             RichEditor::make('message')
+                            ->label(label: "Message de l'invitaté")
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->columnSpan(6),
                         Toggle::make('confirmation')
                             ->columnSpan(3)
                             ->onColor('success')
