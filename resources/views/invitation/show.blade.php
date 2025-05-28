@@ -140,7 +140,7 @@
                                             </div>
                                         </div>
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3" style="border: #777 solid">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3" style="border: #777 solid !important">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
