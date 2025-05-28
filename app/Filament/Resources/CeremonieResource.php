@@ -102,6 +102,16 @@ class CeremonieResource extends Resource
                                 'tissuCouleur' => 'Tissu et couleur',
                             ])
                             ->columnSpan(6),
+                            FileUpload::make('image')
+                            ->columnSpan(12)
+                            ->label('Photo des mariés')
+                            ->directory('image')
+                            ->imageEditor()
+                            ->imageEditorMode(2)
+                            ->downloadable()
+                            ->image()
+                            ->maxSize(3024)
+                            ->previewable(true),
                         FileUpload::make('tissu')
                             ->columnSpan(12)
                             ->label('Tissu en image')
@@ -189,6 +199,12 @@ class CeremonieResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('image')
+                    ->label('Photo des mariés')
+                    // ->disk('storage')      // ou 'storage' selon ton système de fichiers
+                    ->height(60)          // hauteur de l’image
+                    ->width(60)           // largeur de l’image
+                    ->circular(),         // optionnel : rend l’image ronde
                 ImageColumn::make('tissu')
                     ->label('Tissu')
                     // ->disk('storage')      // ou 'storage' selon ton système de fichiers

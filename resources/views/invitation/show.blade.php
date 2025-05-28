@@ -59,7 +59,7 @@
         max-width: 100%;
         height: auto;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 50px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         cursor: pointer;
         transition: transform 0.3s ease;
@@ -108,15 +108,20 @@
                             <div class="wedding-card-head text-center floral-top animate-on-load">
                                 <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
                             </div>
-                            <div class="wedding-card-body text-center position-relative">
-                                <h5>Wedding Invitation</h5>
+                            <div class="wedding-card-body text-center position-relative mb-50">
+                                <h1 class="my-2 mb-30 mt-30">Invitation</h1>
                                 <div class="bg-image couple-photo animate-on-load"
                                     data-aos="zoom-in"data-aos-delay="200">
-                                    <img src="{{ asset('assets/site/images/couple.png') }}" alt=""
+                                    <img src="{{ asset('storage/'.$invitation->ceremonies->image) }}" alt=""
                                         class="img-fluid">
-                                    <div class="mask"></div>
+                                    <div class="mask">
+                                    {{-- <img src="{{ asset('assets/site/images/couple.png') }}" alt=""
+                                        class="img-fluid">
+                                    <div class="mask"> --}}
+
+                                    </div>
                                 </div>
-                                <h1 class="my-2">{{ $invitation->guests->type . ' ' . $invitation->guests->nom }}</h1>
+                                <h1 class="my-2 mt-30">{{ $invitation->guests->type . ' ' . $invitation->guests->nom }}</h1>
                                 <h6>{{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}
                                     ont le bonheur de vous recevoir à un moment inoubliable :</h6>
                                 @switch($invitation->ceremonies->nom)
@@ -135,7 +140,7 @@
                                             </div>
                                         </div>
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3" style="border: #777 solid">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
@@ -156,7 +161,7 @@
                                             </div>
                                         </div>
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3" style="border: 1px solid #777; border-radius: 50px; padding: 10px;">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
@@ -300,8 +305,10 @@
                                 @switch($invitation->status)
                                     @case('send')
                                         <button type="button" class="btn rsvp-btn mt-10 rounded-pill" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal">Confirmez votre présence</button>
-                                    @break
+                                            data-bs-target="#exampleModal" style="border-radius: 50px !important">Confirmez votre présence</button>
+
+
+                                            @break
 
                                     @case('refuse')
                                         <div class="wedding-address">
@@ -325,7 +332,7 @@
 
                                     @case('accept')
                                         <button type="button" class="btn rsvp-btn mt-10  rounded" data-bs-toggle="modal"
-                                            data-bs-target="#map">Voir le QRCODE</button>
+                                            data-bs-target="#map" style="border-radius: 50px !important">Voir le QRCODE</button>
                                     @break
 
                                     @default
@@ -418,7 +425,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="wedding-card-footer text-center  floral-bottom animate-on-load">
+                            <div class="wedding-card-footer text-center  floral-bottom animate-on-load mt-30">
                                 <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/bottom-bg.png') }}">
                             </div>
                         </div>
