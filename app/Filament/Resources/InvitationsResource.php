@@ -92,7 +92,7 @@ class InvitationsResource extends Resource
                         TextInput::make('cadeau')
                             ->label("Cadeau")
                             ->columnSpan(4),
-                             RichEditor::make('message')
+                             RichEditor::make('text')
                             ->label(label: "Message de l'invitaté")
                             ->toolbarButtons([
                                 'attachFiles',
