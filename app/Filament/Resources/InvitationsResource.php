@@ -93,6 +93,26 @@ class InvitationsResource extends Resource
                             ->label("Cadeau")
                             ->columnSpan(4),
                              RichEditor::make('text')
+                            ->label(label: "Reponse de l'invité")
+                            ->helperText("Réponse de l'invité, visible uniquement par l'administrateur")
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->columnSpan(6),
+                             RichEditor::make('message')
                             ->label(label: "Message de l'invitaté")
                             ->toolbarButtons([
                                 'attachFiles',
