@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Filament\Pages;
 
 use App\Helpers\MessageHelper;
@@ -25,7 +23,6 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -118,7 +115,7 @@ class SendInvitations extends Page implements HasForms
             })->values();
 
         match ($this->activeChannel) {
-            'whatsapp' => $this->envoyerViaWhatsapp($guests,$this->message),
+            'whatsapp' => $this->envoyerViaWhatsapp($guests, $this->message),
             'email' => $this->envoyerViaEmail($guests),
             'sms' => $this->envoyerViaSms($guests),
             'enDure' => $this->envoyerEnDure($guests),
@@ -163,7 +160,7 @@ class SendInvitations extends Page implements HasForms
             Radio::make('activeChannel')
                 ->label('Canal d’envoi')
                 ->options([
-                    'enDure' => 'En dure',
+                    'enDure'   => 'En dure',
                     'whatsapp' => 'WhatsApp',
                     'email'    => 'Email',
                     'sms'      => 'SMS (Juste pour rappeler les invités)',
@@ -413,7 +410,7 @@ class SendInvitations extends Page implements HasForms
         }
     }
 
-    public function envoyerViaWhatsapp($guests,$messageTxt)
+    public function envoyerViaWhatsapp($guests, $messageTxt)
     {
         // Sauvegarder les invités valides dans la session
         session()->put('guest_ids', $guests->pluck('id')->toArray());
@@ -539,23 +536,23 @@ class SendInvitations extends Page implements HasForms
                 do {
                     $reference = "INV-" . date('Ymd') . "-" . strtoupper(Str::random(6));
                 } while (Invitation::where('reference', $reference)->exists());
-                $msg = "";
+                $msg   = "";
                 $moyen = "";
                 switch ($this->activeChannel) {
                     case 'whatsapp':
-                        $msg = $this->message;
-                         $moyen = "whatsapp";
+                        $msg   = $this->message;
+                        $moyen = "whatsapp";
                         break;
                     case 'email':
-                        $msg = $this->message;
-                         $moyen = "email";
+                        $msg   = $this->message;
+                        $moyen = "email";
                         break;
                     case 'sms':
-                        $msg = $this->messageSms;
-                         $moyen = "sms";
+                        $msg   = $this->messageSms;
+                        $moyen = "sms";
                         break;
                     case 'enDure':
-                         $moyen = "enDure";
+                        $moyen = "enDure";
                         break;
                 }
                 $now          = Carbon::now()->startOfDay();
@@ -584,21 +581,22 @@ class SendInvitations extends Page implements HasForms
                     ],
                     $msg ?? ''
                 );
-
-                // Création ou mise à jour de l’invitation
-                Invitation::updateOrCreate(
-                    [
-                        'guest_id'     => $guest->id,
-                        'ceremonie_id' => $this->ceremonieId,
-                    ],
-                    [
-                        'groupe_id' => $this->table,
-                        'status'    => 'send',
-                        'message'   => $customMessage,
-                        'reference' => $reference,
-                        'moyen' => $moyen,
-                    ]
-                );
+                if ($this->activeChannel != "sms") {
+                    // Création ou mise à jour de l’invitation
+                    Invitation::updateOrCreate(
+                        [
+                            'guest_id'     => $guest->id,
+                            'ceremonie_id' => $this->ceremonieId,
+                        ],
+                        [
+                            'groupe_id' => $this->table,
+                            'status'    => 'send',
+                            'message'   => $customMessage,
+                            'reference' => $reference,
+                            'moyen'     => $moyen,
+                        ]
+                    );
+                }
             }
 
             return true; // ✅ succès
