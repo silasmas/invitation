@@ -130,7 +130,7 @@ class InvitationsResource extends Resource
                                 'underline',
                                 'undo',
                             ])
-                            ->columnSpan(12),
+                            ->columnSpan(6),
                              RichEditor::make('msgRappel')
                             ->label(label: "Message de rappel")
                             ->helperText("Message de rappel envoyé par SMS, visible uniquement par l'administrateur")
@@ -150,7 +150,7 @@ class InvitationsResource extends Resource
                                 'underline',
                                 'undo',
                             ])
-                            ->columnSpan(6),
+                            ->columnSpan(12),
                         Toggle::make('confirmation')
                             ->columnSpan(3)
                             ->onColor('success')
