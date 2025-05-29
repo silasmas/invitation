@@ -145,10 +145,10 @@ class UserResource extends Resource
 // {
 //     return auth()->user()?->hasRole('admin');
 // }
-    public static function shouldRegisterNavigation(): bool
-    {
-        return auth()->user()?->can('view_any_user');
-    }
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     return auth()->user()?->can('view_any_user');
+    // }
     public static function canCreate(): bool
     {
         return auth()->user()?->can('create_user');
