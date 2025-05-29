@@ -2,7 +2,6 @@
 
 return [
     'shield_resource' => [
-        'auto_discover_enabled' => true,
         'should_register_navigation' => true,
         'slug' => 'shield/roles',
         'navigation_sort' => -1,

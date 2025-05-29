@@ -1,21 +1,22 @@
 <?php
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Password;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Password;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
+use App\Filament\Resources\UserResource\Pages;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class UserResource extends Resource
+class UserResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = User::class;
 
@@ -23,6 +24,18 @@ class UserResource extends Resource
     protected static ?string $permission     = 'access_dashboard';
 
     protected static ?int $navigationSort = 7;
+      public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'publish'
+        ];
+    }
     public static function getLabel(): string
     {
         return 'Utilisateurs';
@@ -145,10 +158,10 @@ class UserResource extends Resource
 // {
 //     return auth()->user()?->hasRole('admin');
 // }
-    // public static function shouldRegisterNavigation(): bool
-    // {
-    //     return auth()->user()?->can('view_any_user');
-    // }
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->can('view_any_user');
+    }
     public static function canCreate(): bool
     {
         return auth()->user()?->can('create_user');
