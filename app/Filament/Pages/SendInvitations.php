@@ -500,7 +500,7 @@ class SendInvitations extends Page implements HasForms
             $ceremony     = $invitation->ceremonies;
             $event        = $ceremony->event ?? null;
             $titre        = $event->nom ?? 'Invitation';
-            $messageFinal = htmlspecialchars(strip_tags($invitation->message));
+            $messageFinal = htmlspecialchars(strip_tags($invitation->msgRappel));
 
             // ✅ Envoi par SMS
             if ($guest->phone) {
