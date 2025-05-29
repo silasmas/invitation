@@ -130,12 +130,40 @@ class InvitationsResource extends Resource
                                 'underline',
                                 'undo',
                             ])
+                            ->columnSpan(12),
+                             RichEditor::make('msgRappel')
+                            ->label(label: "Message de rappel")
+                            ->helperText("Message de rappel envoyé par SMS, visible uniquement par l'administrateur")
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
                             ->columnSpan(6),
                         Toggle::make('confirmation')
                             ->columnSpan(3)
                             ->onColor('success')
                             ->offColor('danger')
                             ->label("Confirmation")
+                            ->default(false)
+                            ->required(),
+                        Toggle::make('rappel')
+                            ->columnSpan(3)
+                            ->onColor('success')
+                            ->offColor('danger')
+                            ->label("Rappel")
+                            // ->helperText("Envoyer un SMS de rappel à l'invité")
                             ->default(false)
                             ->required(),
                     ])->columnS(12),
@@ -210,6 +238,9 @@ class InvitationsResource extends Resource
                     ->searchable(),
                 IconColumn::make('confirmation')
                     ->label("Etat")
+                    ->boolean(),
+                IconColumn::make('rappel')
+                    ->label("Rappel")
                     ->boolean(),
                 // ImageColumn::make('qr_code')
                 //     ->label('QR Code')

@@ -596,6 +596,17 @@ class SendInvitations extends Page implements HasForms
                             'moyen'     => $moyen,
                         ]
                     );
+                }else{
+                     Invitation::updateOrCreate(
+                        [
+                            'guest_id'     => $guest->id,
+                            'ceremonie_id' => $this->ceremonieId,
+                        ],
+                        [
+                            'rappel'    =>true,
+                            'msgRappel'   => $customMessage,
+                        ]
+                    );
                 }
             }
 
