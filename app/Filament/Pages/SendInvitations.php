@@ -205,10 +205,12 @@ class SendInvitations extends Page implements HasForms
                                             }
                                         } else {
                                             $set('messageSms', $this->messageSms);
+                                            $set('message', $this->messageSms);
                                         }
                                     })
                                     ->required(),
                                 Select::make('table')
+                                 ->visible(fn($get) => $get('activeChannel') === 'whatsapp')
                                     ->label('Choisir une table')
                                     ->options(Groupe::pluck('nom', 'id'))
                                     ->searchable()
