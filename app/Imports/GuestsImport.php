@@ -32,6 +32,7 @@ class GuestsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFa
             'phone'    => $row['phone'],
             'relation' => $row['relation'] ?? 'autre',
         ]);
+
     }
 // 🔹 Ajout de messages d'erreur personnalisés
 public function customValidationMessages()

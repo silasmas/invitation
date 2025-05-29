@@ -117,7 +117,7 @@
                 reference: invitationId
             };
             $.ajax({
-                url: '/invitations/confirmation/',
+                url: '/invitations/confirmation',
                 type: 'POST',
                 data: formData,
                 success: function(response) {

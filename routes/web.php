@@ -40,7 +40,7 @@ Route::get('/i/{code}', function ($code) {
     return Redirect::route('invitation.show', ['reference' => $link->reference]);
 });
 Route::post('/invitations/accept', [InvitationController::class, 'accept']);
-Route::post('/invitations/confirmation/', [InvitationController::class, 'confirmation'])->name('invitations.confirmation');;
+Route::post('/invitations/confirmation', [InvitationController::class, 'confirmation'])->name('invitations.confirmation');;
 Route::post('/invitations/{invitation}/decline', [InvitationController::class, 'decline']);
 Route::post('/invitations/{invitation}/close', [InvitationController::class, 'close']);
 Route::get('/invitations/{invitation}/download-qrcode', [QRCodeController::class, 'downloadQrCode']);
