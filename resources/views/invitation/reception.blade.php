@@ -25,12 +25,19 @@
                     <div class="wedding-card-head text-center">
                         <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
                     </div>
-                    <div class="wedding-card-body text-center position-relative">
-                        <h5>Wedding Invitation</h5>
-                        <div class="bg-image">
-                            <img src="{{ asset('assets/site/images/couple.png') }}" alt="" class="img-fluid">
-                            <div class="mask"></div>
-                        </div>
+                    <div class="wedding-card-body text-center position-relative mb-50">
+                        <h1 class="my-2 mb-30 mt-30">Invitation</h1>
+                                <div class="bg-image couple-photo animate-on-load"
+                                    data-aos="zoom-in"data-aos-delay="200">
+                                    <img src="{{ asset('storage/'.$invitation->ceremonies->image) }}" alt=""
+                                        class="img-fluid">
+                                    <div class="mask">
+                                    {{-- <img src="{{ asset('assets/site/images/couple.png') }}" alt=""
+                                        class="img-fluid">
+                                    <div class="mask"> --}}
+
+                                    </div>
+                                </div>
                         @if ($invitation)
                             <h1 class="my-2">{{ $invitation->guests->type . ' ' . $invitation->guests->nom }}</h1>
                             <h6>
