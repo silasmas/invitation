@@ -71,7 +71,7 @@ class SendInvitations extends Page implements HasForms
             return;
         }
 
-        if (! $this->table) {
+        if (! $this->table && $this->activeChannel === 'whatsapp') {
             Notification::make()
                 ->title("Erreur")
                 ->body("Veuillez choisir une table.")
