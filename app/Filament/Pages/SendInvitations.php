@@ -38,7 +38,7 @@ class SendInvitations extends Page implements HasForms
     public $selectedGuests         = [];
     public string $messageWhatsapp = "Bonjour {nom}, vous êtes invité à notre événement via WhatsApp !";
     public string $messageEmail    = "Bonjour {nom}, ceci est une invitation par email.";
-    public string $messageSms      = "Bonjour {categorie} {nom}, Vous etes attendu(e) à la cérémonie du mariage {ceremony} de {femme} et {homme} {date}. Votre invitation : {lien}
+    public string $messageSms      = "Bonjour {categorie} {nom}, Vous etes attendu(e) à la cérémonie du mariage {ceremony} de {femme} et {homme} {date}.
     Merci de ne pas oublier votre QR Code pour accéder à la cérémonie.";
 
     public $ceremonieId;
