@@ -140,7 +140,7 @@
                                             </div>
                                         </div>
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3" style="border: 1px solid #777; border-radius: 50px; padding: 10px;">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
@@ -161,7 +161,7 @@
                                             </div>
                                         </div>
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3" style="border: 1px solid #777; border-radius: 50px; padding: 10px;">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
@@ -182,7 +182,7 @@
                                             </div>
                                         </div>
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3" style="border: 1px solid #777; border-radius: 50px; padding: 10px;">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
@@ -200,11 +200,12 @@
                                     @endphp
 
 
-                                   <div class="container my-5">
+                                   <div class="container my-1">
                                         <div class="mx-auto p-4 shadow rounded-4 bg-white text-center"
                                             style="max-width: 480px; width: 100%;">
 
-                                            <h4 class="mb-3" style="font-family: 'Georgia', cursive;">Dress code
+                                            <h4 class="mb-3" style="font-family: 'Georgia', cursive;
+                                            border: 1px solid #777; border-radius: 50px; padding: 10px;">Dress code
                                             </h4>
 
 

@@ -19,7 +19,7 @@ class RoleResource extends Resource
     // protected static ?string $model = Role::class;
     protected static ?string $model = \Spatie\Permission\Models\Role::class;
 
-    protected static ?int $navigationSort    = 7;
+    protected static ?int $navigationSort    = 8;
     public static function getLabel(): string
     {
         return 'Gestion des Roles';
@@ -35,7 +35,6 @@ class RoleResource extends Resource
                     ->relationship('permissions', 'name')
                     ->preload()
                     ->searchable(),
-
             ]);
     }
 
