@@ -281,7 +281,7 @@
                                                         @default
                                                             <p class="text-muted">Aucun dress code précisé.</p>
                                                     @endswitch
-                                                    @if(!$tissu->isNotEmpty())
+                                                    @if($tissu)
                                                     <!-- Modal Bootstrap -->
                                                     @forelse ($tissu as $t)
                                                         <div class="modal fade" id="tissuModal{{ $loop->index }}"
