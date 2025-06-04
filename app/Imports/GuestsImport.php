@@ -22,18 +22,40 @@ class GuestsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFa
         $this->eventId = $eventId;
     }
 
-    public function model(array $row)
-    {
-        return new Guest([
-            'type'    => $row['type'],
-            'event_id' => $this->eventId,
-            'nom'     => $row['nom'],  // Correspond au nom de la colonne dans Excel
-            'email'    => $row['email'],
-            'phone'    => $row['phone'],
-            'relation' => $row['relation'] ?? 'autre',
-        ]);
-
+   public function model(array $row)
+{
+    // 1) Si la ligne est entièrement vide, on ignore
+    if (
+        (empty($row['type']) || is_null($row['type'])) &&
+        (empty($row['nom'])  || is_null($row['nom']))  &&
+        (empty($row['email'])|| is_null($row['email']))&&
+        (empty($row['phone'])|| is_null($row['phone']))&&
+        (empty($row['relation'])|| is_null($row['relation']))
+    ) {
+        // Retourner null fait que Maatwebsite n’essaiera pas d’enregistrer ce guest
+        return null;
     }
+
+    // 2) S’assurer que les clés existent (au cas où le heading row serait décalé)
+    $type     = $row['type']     ?? null;
+    $nom      = $row['nom']      ?? null;
+    $email    = $row['email']    ?? null;
+    $phoneRaw = $row['phone']    ?? null;
+    $relation = $row['relation'] ?? 'autre';
+
+    // 3) Nettoyer le téléphone (si vous gardez la regex actuelle)
+    $cleanPhone = $phoneRaw ? str_replace(' ', '', $phoneRaw) : null;
+
+    return new Guest([
+        'type'     => $type,
+        'event_id' => $this->eventId,
+        'nom'      => $nom,
+        'email'    => $email,
+        'phone'    => $cleanPhone,
+        'relation' => $relation,
+    ]);
+}
+
 // 🔹 Ajout de messages d'erreur personnalisés
 public function customValidationMessages()
 {
@@ -56,17 +78,17 @@ public function customValidationMessages()
     public function rules(): array
     {
         return [
-            '*.nom' => 'required|string|max:255',
-            '*.type' => 'required|string|max:255',
-            '*.email' =>  [
-                'nullable',
-                'email',
-                Rule::unique('guests', 'email')->where(fn ($query) => $query->where('event_id', $this->eventId)),
-            ],
+            '*.nom' => 'nullable|string|max:255',
+            '*.type' => 'nullable|string|max:255',
+            // '*.email' =>  [
+            //     'nullable',
+            //     'email',
+            //     Rule::unique('guests', 'email')->where(fn ($query) => $query->where('event_id', $this->eventId)),
+            // ],
             '*.phone' => [
                 'nullable',
-                'regex:/^\+?[0-9]{8,15}$/',
-                'starts_with:+,0,1,2,3,4,5,6,7,8,9',
+                // 'regex:/^\+?[0-9]{8,15}$/',
+                // 'starts_with:+,0,1,2,3,4,5,6,7,8,9',
             ],
         ];
     }
