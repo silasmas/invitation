@@ -187,6 +187,26 @@
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
                                     @break
+                                    @case('Soirée dansante')
+                                        <div class="wedding-card-date mt-3">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-3 theme-color text-end">
+                                                    {{ $invitation->ceremonies->day_of_week }}<br>
+                                                    {{ $invitation->ceremonies->month }}</div>
+                                                <div class="col-md-2 theme-color text-center date xs-mt-20">
+                                                    {{ $invitation->ceremonies->day }}
+                                                </div>
+                                                <div class="col-md-3 theme-color text-start xs-mt-20">
+                                                    {{ $invitation->ceremonies->time }}<br>
+                                                    {{ $invitation->ceremonies->year }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="wedding-address">
+                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            </h3>
+                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
+                                        </div>
+                                    @break
 
                                     @default
                                 @endswitch
