@@ -102,7 +102,7 @@ class CeremonieResource extends Resource
                                 'tissuCouleur' => 'Tissu et couleur',
                             ])
                             ->columnSpan(6),
-                            FileUpload::make('image')
+                        FileUpload::make('image')
                             ->columnSpan(12)
                             ->label('Photo des mariés')
                             ->directory('image')
@@ -117,6 +117,7 @@ class CeremonieResource extends Resource
                             ->label('Tissu en image')
                             ->directory('tissu')
                             ->imageEditor()
+                            ->multiple()
                             ->imageEditorMode(2)
                             ->downloadable()
                             ->image()
@@ -130,11 +131,11 @@ class CeremonieResource extends Resource
                                     ->required()
                                     ->rule('regex:/^#[0-9A-Fa-f]{6}$/')
                                     ->dehydrateStateUsing(fn($state) => $state), // garde juste le code hex
-                                     TextInput::make('name')
-            ->label('Nom de la couleur')
-            ->placeholder('Ex: Rouge Bordeaux')
-            ->required()
-            ->maxLength(30),
+                                TextInput::make('name')
+                                    ->label('Nom de la couleur')
+                                    ->placeholder('Ex: Rouge Bordeaux')
+                                    ->required()
+                                    ->maxLength(30),
 
                             ])->afterStateHydrated(function (Repeater $component, $state) {
                             if (is_array($state) && isset($state[0]) && is_string($state[0])) {
@@ -201,16 +202,19 @@ class CeremonieResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('image')
                     ->label('Photo des mariés')
-                    // ->disk('storage')      // ou 'storage' selon ton système de fichiers
-                    ->height(60)          // hauteur de l’image
-                    ->width(60)           // largeur de l’image
-                    ->circular(),         // optionnel : rend l’image ronde
+                              // ->disk('storage')      // ou 'storage' selon ton système de fichiers
+                    ->height(60)  // hauteur de l’image
+                    ->width(60)   // largeur de l’image
+                    ->circular(), // optionnel : rend l’image ronde
                 ImageColumn::make('tissu')
                     ->label('Tissu')
-                    // ->disk('storage')      // ou 'storage' selon ton système de fichiers
-                    ->height(60)          // hauteur de l’image
-                    ->width(60)           // largeur de l’image
-                    ->circular(),         // optionnel : rend l’image ronde
+                    ->stacked()
+                    ->overlap(2)
+                    ->wrap()
+                              // ->disk('storage')      // ou 'storage' selon ton système de fichiers
+                    ->height(60)  // hauteur de l’image
+                    ->width(60)   // largeur de l’image
+                    ->circular(), // optionnel : rend l’image ronde
                 TextColumn::make('event.nom')
                     ->numeric()
                     ->sortable(),

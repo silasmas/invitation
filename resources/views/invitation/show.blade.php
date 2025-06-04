@@ -122,94 +122,60 @@
                                     </div>
                                 </div>
                                 <h1 class="my-2 mt-30">{{ $invitation->guests->type . ' ' . $invitation->guests->nom }}</h1>
-                                <h6>{{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}
+                                {{-- <h6>{{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }} --}}
                                     {!! $invitation->ceremonies->description !!}</h6>
-                                @switch($invitation->ceremonies->nom)
-                                    @case('Coutumier')
-                                        <div class="wedding-card-date mt-3">
+                                     <div class="wedding-card-date mt-3">
                                             <div class="row justify-content-center">
-                                                <div class="col-md-3 theme-color text-end">
+                                                <div class="col-md-3 theme-color text-end mt-20">
                                                     {{ $invitation->ceremonies->day_of_week }}<br>
-                                                    {{ $invitation->ceremonies->month }}</div>
+                                                   </div>
                                                 <div class="col-md-2 theme-color text-center date xs-mt-20">
                                                     {{ $invitation->ceremonies->day }}
                                                 </div>
                                                 <div class="col-md-3 theme-color text-start xs-mt-20">
-                                                    {{ $invitation->ceremonies->time }}<br>
+                                                     {{ $invitation->ceremonies->month }}<br>
                                                     {{ $invitation->ceremonies->year }}</div>
                                             </div>
                                         </div>
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3">{{ $invitation->ceremonies->nom }}
+                                            </h3>
+                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
+                                        </div>
+                                {{-- @switch($invitation->ceremonies->nom)
+                                    @case('Coutumier')
+
+                                        <div class="wedding-address">
+                                            <h3 class="uppercase my-3">{{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
                                     @break
 
                                     @case('Civile')
-                                        <div class="wedding-card-date mt-3">
-                                            <div class="row justify-content-center">
-                                                <div class="col-md-3 theme-color text-end">
-                                                    {{ $invitation->ceremonies->day_of_week }}<br>
-                                                    {{ $invitation->ceremonies->month }}</div>
-                                                <div class="col-md-2 theme-color text-center date xs-mt-20">
-                                                    {{ $invitation->ceremonies->day }}
-                                                </div>
-                                                <div class="col-md-3 theme-color text-start xs-mt-20">
-                                                    {{ $invitation->ceremonies->time }}<br>
-                                                    {{ $invitation->ceremonies->year }}</div>
-                                            </div>
-                                        </div>
+
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3">{{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
                                     @break
 
                                     @case('Réligieux')
-                                        <div class="wedding-card-date mt-3">
-                                            <div class="row justify-content-center">
-                                                <div class="col-md-3 theme-color text-end">
-                                                    {{ $invitation->ceremonies->day_of_week }}<br>
-                                                    {{ $invitation->ceremonies->month }}</div>
-                                                <div class="col-md-2 theme-color text-center date xs-mt-20">
-                                                    {{ $invitation->ceremonies->day }}
-                                                </div>
-                                                <div class="col-md-3 theme-color text-start xs-mt-20">
-                                                    {{ $invitation->ceremonies->time }}<br>
-                                                    {{ $invitation->ceremonies->year }}</div>
-                                            </div>
-                                        </div>
+
                                         <div class="wedding-address">
-                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
+                                            <h3 class="uppercase my-3"> {{ $invitation->ceremonies->nom }}
                                             </h3>
                                             <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                         </div>
                                     @break
                                     @case('Soirée dansante')
-                                        <div class="wedding-card-date mt-3">
-                                            <div class="row justify-content-center">
-                                                <div class="col-md-3 theme-color text-end">
-                                                    {{ $invitation->ceremonies->day_of_week }}<br>
-                                                    {{ $invitation->ceremonies->month }}</div>
-                                                <div class="col-md-2 theme-color text-center date xs-mt-20">
-                                                    {{ $invitation->ceremonies->day }}
-                                                </div>
-                                                <div class="col-md-3 theme-color text-start xs-mt-20">
-                                                    {{ $invitation->ceremonies->time }}<br>
-                                                    {{ $invitation->ceremonies->year }}</div>
-                                            </div>
-                                        </div>
-                                        <div class="wedding-address">
-                                            <h3 class="uppercase my-3">Cérémonie du mariage {{ $invitation->ceremonies->nom }}
-                                            </h3>
-                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
-                                        </div>
+
+
                                     @break
 
                                     @default
-                                @endswitch
+                                @endswitch --}}
                                 @if (!empty($invitation->ceremonies->dressCode))
                                     @php
 
@@ -256,11 +222,16 @@
                                                             tenues.
                                                         </p>
                                                         <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            @forelse ($tissu as $t)
                                                             <a href="#" data-bs-toggle="modal"
-                                                                data-bs-target="#tissuModal">
-                                                                <img src="{{ asset('storage/' . $tissu) }}"
+                                                                data-bs-target="#tissuModal{{ $loop->index }}">
+                                                                <img src="{{ asset('storage/' . $t) }}"
                                                                     alt="Tissu dress code" class="dress-image">
-                                                            </a>
+
+                                                                </a>
+                                                                @empty
+
+                                                                @endforelse
                                                             <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
                                                         </div>
                                                     @endif
@@ -285,35 +256,42 @@
                                                             @endforeach
                                                         </div>
                                                     @endif
-                                                    @if ($tissu)
-                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
-                                                            <a href="#" data-bs-toggle="modal"
-                                                                data-bs-target="#tissuModal">
-                                                                <img src="{{ asset('storage/' . $tissu) }}"
-                                                                    alt="Tissu dress code" class="dress-image">
-                                                            </a>
-                                                            <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
-                                                        </div>
-                                                    @endif
+                                                   @if ($tissu)
+    <div class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
+        @forelse ($tissu as $t)
+            <a href="#" data-bs-toggle="modal" data-bs-target="#tissuModal{{ $loop->index }}">
+                <img src="{{ asset('storage/' . $t) }}" alt="Tissu dress code" width="50px" class="dress-image">
+            </a>
+        @empty
+        @endforelse
+    </div>
+    <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur l'image pour agrandir</div>
+@endif
+
                                                 @break
 
                                                 @default
                                                     <p class="text-muted">Aucun dress code précisé.</p>
                                             @endswitch
                                             <!-- Modal Bootstrap -->
-                                            <div class="modal fade" id="tissuModal" tabindex="-1"
+                                               @forelse ($tissu as $t)
+                                            <div class="modal fade" id="tissuModal{{ $loop->index }}" tabindex="-1"
                                                 aria-labelledby="tissuModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered modal-lg">
                                                     <div class="modal-content bg-transparent border-0">
                                                         <div class="modal-body p-0">
-                                                            <img src="{{ asset('storage/' . $tissu) }}"
-                                                                alt="Tissu dress code"
-                                                                class="img-fluid rounded shadow-lg">
+
+                                                                <img src="{{ asset('storage/' . $t) }}"
+                                                                    alt="Tissu dress code" class="dress-image">
+
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+ @empty
 
+                                                                @endforelse
                                         </div>
                                     </div>
 

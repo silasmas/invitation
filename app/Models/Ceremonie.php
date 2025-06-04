@@ -23,6 +23,7 @@ class Ceremonie extends Model
 
     protected $casts = [
         'dressCode' => 'array',
+        'tissu' => 'array',
         'date' => 'datetime',
     ];
 
