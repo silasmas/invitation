@@ -123,7 +123,7 @@
                                 </div>
                                 <h1 class="my-2 mt-30">{{ $invitation->guests->type . ' ' . $invitation->guests->nom }}</h1>
                                 <h6>{{ $invitation->ceremonies->event->femme . ' & ' . $invitation->ceremonies->event->homme }}
-                                    {{ $invitation->ceremonies->description }}</h6>
+                                    {!! $invitation->ceremonies->description !!}</h6>
                                 @switch($invitation->ceremonies->nom)
                                     @case('Coutumier')
                                         <div class="wedding-card-date mt-3">
