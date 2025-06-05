@@ -191,16 +191,15 @@
                                         <div class="mx-auto p-4 shadow rounded-4 bg-white text-center"
                                             style="max-width: 480px; width: 100%;">
 
-                                            <h4 class="mb-3"
-                                                style="font-family: 'Georgia', cursive;
-                                            border: 1px solid #777; border-radius: 50px; padding: 10px;">
-                                                Dress code
-                                            </h4>
-
-
                                             @switch($type)
                                                 @case('couleur')
                                                     @if ($couleurs->isNotEmpty())
+                                                        <h4 class="mb-3"
+                                                            style="font-family: 'Georgia', cursive;
+                                            border: 1px solid #777; border-radius: 50px; padding: 10px;">
+                                                            Dress code
+                                                        </h4>
+
                                                         <p class="text-muted mb-4">
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
                                                             tenues.
@@ -220,6 +219,11 @@
                                                         </div>
                                                     @endif
                                                 @case('tissu')
+                                                    <h4 class="mb-3"
+                                                        style="font-family: 'Georgia', cursive;
+                                            border: 1px solid #777; border-radius: 50px; padding: 10px;">
+                                                        Dress code
+                                                    </h4>
                                                     @if ($tissu)
                                                         <p class="text-muted mb-4">
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
@@ -241,6 +245,11 @@
                                                     @break
 
                                                     @case('tissuCouleur')
+                                                    <h4 class="mb-3"
+                                                                style="font-family: 'Georgia', cursive;
+                                            border: 1px solid #777; border-radius: 50px; padding: 10px;">
+                                                                Dress code
+                                                            </h4>
                                                         @if ($couleurs)
                                                             <p class="text-muted mb-4">
                                                                 Merci de bien vouloir respecter la palette ci-dessous pour vos
@@ -261,6 +270,7 @@
                                                             </div>
                                                         @endif
                                                         @if ($tissu)
+
                                                             <div
                                                                 class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
                                                                 @forelse ($tissu as $t)
@@ -281,25 +291,26 @@
                                                         @default
                                                             <p class="text-muted">Aucun dress code précisé.</p>
                                                     @endswitch
-                                                    @if($tissu)
-                                                    <!-- Modal Bootstrap -->
-                                                    @forelse ($tissu as $t)
-                                                        <div class="modal fade" id="tissuModal{{ $loop->index }}"
-                                                            tabindex="-1" aria-labelledby="tissuModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                                <div class="modal-content bg-transparent border-0">
-                                                                    <div class="modal-body p-0">
+                                                    @if ($tissu)
+                                                        <!-- Modal Bootstrap -->
+                                                        @forelse ($tissu as $t)
+                                                            <div class="modal fade" id="tissuModal{{ $loop->index }}"
+                                                                tabindex="-1" aria-labelledby="tissuModalLabel"
+                                                                aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                                    <div class="modal-content bg-transparent border-0">
+                                                                        <div class="modal-body p-0">
 
-                                                                        <img src="{{ asset('storage/' . $t) }}"
-                                                                            alt="Tissu dress code" class="dress-image">
+                                                                            <img src="{{ asset('storage/' . $t) }}"
+                                                                                alt="Tissu dress code" class="dress-image">
 
 
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    @empty
-                                                    @endforelse
+                                                        @empty
+                                                        @endforelse
 
                                                     @endif
                                                 </div>
@@ -444,7 +455,7 @@
             </section>
         </div>
         <!--=================================
-         login-->
+                 login-->
 
         @include('parties.pied')
 
