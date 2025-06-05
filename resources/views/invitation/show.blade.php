@@ -91,6 +91,10 @@
     .dress-image:hover {
         transform: scale(1.2);
     }
+    .snap-center {
+    scroll-snap-align: center;
+}
+
 </style>
 
 <div class="animate-on-load" style="text-align:center; padding:10px 20px;">
@@ -235,25 +239,21 @@
                                                         Dress code
                                                     </h4>
                                                     @if ($tissu)
-                                                        <p class="text-muted mb-4">
-                                                            Merci de bien vouloir respecter la palette ci-dessous pour vos
-                                                            tenues.
-                                                        </p>
-                                                        <div
-                                                            class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
-                                                            @forelse ($tissu as $t)
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    data-bs-target="#tissuModal{{ $loop->index }}">
-                                                                    <img src="{{ asset('storage/' . $t) }}"
-                                                                        alt="Tissu dress code" width="50px"
-                                                                        class="dress-image">
-                                                                </a>
-                                                            @empty
-                                                            @endforelse
-                                                        </div>
-                                                        <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur
-                                                            l'image pour agrandir</div>
-                                                    @endif
+    <div class="d-flex overflow-auto flex-nowrap px-3 py-2 gap-3" style="scroll-snap-type: x mandatory;">
+        @foreach ($tissu as $index => $t)
+            <a href="#" data-bs-toggle="modal" data-bs-target="#tissuModal{{ $index }}" class="snap-center">
+                <img src="{{ asset('storage/' . $t) }}"
+                     alt="Tissu dress code"
+                     width="60"
+                     height="60"
+                     class="rounded shadow-sm border"
+                     style="object-fit: cover;">
+            </a>
+        @endforeach
+    </div>
+    <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur l'image pour agrandir</div>
+@endif
+
                                                     @break
 
                                                     @case('tissuCouleur')
@@ -282,21 +282,21 @@
                                                             </div>
                                                         @endif
                                                         @if ($tissu)
-                                                            <div
-                                                                class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
-                                                                @forelse ($tissu as $t)
-                                                                    <a href="#" data-bs-toggle="modal"
-                                                                        data-bs-target="#tissuModal{{ $loop->index }}">
-                                                                        <img src="{{ asset('storage/' . $t) }}"
-                                                                            alt="Tissu dress code" width="50px"
-                                                                            class="dress-image">
-                                                                    </a>
-                                                                @empty
-                                                                @endforelse
-                                                            </div>
-                                                            <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur
-                                                                l'image pour agrandir</div>
-                                                        @endif
+    <div class="d-flex overflow-auto flex-nowrap px-3 py-2 gap-3" style="scroll-snap-type: x mandatory;">
+        @foreach ($tissu as $index => $t)
+            <a href="#" data-bs-toggle="modal" data-bs-target="#tissuModal{{ $index }}" class="snap-center">
+                <img src="{{ asset('storage/' . $t) }}"
+                     alt="Tissu dress code"
+                     width="60"
+                     height="60"
+                     class="rounded shadow-sm border"
+                     style="object-fit: cover;">
+            </a>
+        @endforeach
+    </div>
+    <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur l'image pour agrandir</div>
+@endif
+
                                                         @break
 
                                                         @default
