@@ -529,6 +529,7 @@ class SendInvitations extends Page implements HasForms
 
     public function Invitation(): bool
     {
+        dd($this);
         try {
             $ceremony = Ceremonie::find($this->ceremonieId);
             $guests   = Guest::whereIn('id', $this->selectedGuests)->get();
