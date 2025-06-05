@@ -204,18 +204,19 @@
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
                                                             tenues.
                                                         </p>
-                                                        <div
-                                                                class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
-                                                                @forelse ($tissu as $t)
-                                                                    <a href="#" data-bs-toggle="modal"
-                                                                        data-bs-target="#tissuModal{{ $loop->index }}">
-                                                                        <img src="{{ asset('storage/' . $t) }}"
-                                                                            alt="Tissu dress code" width="50px"
-                                                                            class="dress-image">
-                                                                    </a>
-                                                                @empty
-                                                                @endforelse
-                                                            </div>
+                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+                                                            @foreach ($couleurs as $color)
+                                                                <div class="d-flex flex-column align-items-center">
+                                                                    <div class="rounded-circle color-circle"
+                                                                        style="background-color: {{ $color['hex'] }};
+                                                                        border: 2px solid {{ $color['hex'] }};
+                                                                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);">
+                                                                    </div>
+                                                                    <div class="text-muted small mt-1">{{ $color['name'] }}
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
                                                     @endif
                                                 @case('tissu')
                                                     <h4 class="mb-3"
@@ -228,18 +229,21 @@
                                                             Merci de bien vouloir respecter la palette ci-dessous pour vos
                                                             tenues.
                                                         </p>
-                                                        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
-                                                            @forelse ($tissu as $t)
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    data-bs-target="#tissuModal{{ $loop->index }}">
-                                                                    <img src="{{ asset('storage/' . $t) }}"
-                                                                        alt="Tissu dress code" class="dress-image">
+                                                        <div
+                                                                class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
+                                                                @forelse ($tissu as $t)
+                                                                    <a href="#" data-bs-toggle="modal"
+                                                                        data-bs-target="#tissuModal{{ $loop->index }}">
+                                                                        <img src="{{ asset('storage/' . $t) }}"
+                                                                            alt="Tissu dress code" width="50px"
+                                                                            class="dress-image">
+                                                                    </a>
+                                                                @empty
+                                                                @endforelse
+                                                                <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur
+                                                                l'image pour agrandir</div>
+                                                            </div>
 
-                                                                </a>
-                                                            @empty
-                                                            @endforelse
-                                                            <div class="click-to-zoom">Cliquez sur l'image pour agrandir</div>
-                                                        </div>
                                                     @endif
                                                     @break
 
