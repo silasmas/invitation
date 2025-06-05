@@ -97,53 +97,58 @@
     }
 
     .dresscode-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 1rem;
-    padding: 0.5rem 1rem;
-    scroll-snap-type: x mandatory;
-    justify-content: flex-start;
-}
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+        scroll-snap-type: x mandatory;
+        justify-content: flex-start;
+    }
 
-.dresscode-item {
-    scroll-snap-align: center;
-    flex: 0 0 auto;
-    display: block;
-    cursor: pointer;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.dresscode-item img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border: 1px solid #ccc;
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.dresscode-item:hover {
-    transform: scale(1.1);
-}
-
-@media (min-width: 768px) {
-    .dresscode-container {
-        flex-wrap: wrap;
-        justify-content: center;
-        overflow: visible;
+    .dresscode-item {
+        scroll-snap-align: center;
+        flex: 0 0 auto;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        display: inline-block;
+        cursor: pointer;
+        z-index: 1;
     }
 
     .dresscode-item img {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        pointer-events: none;
+        /* Important : le clic se passe au niveau du <a>, pas de <img> */
     }
-}
 
+    .dresscode-item:hover {
+        transform: scale(1.1);
+    }
+
+    /* 💻 Affichage en grille dès écran ≥ 768px */
+    @media (min-width: 768px) {
+        .dresscode-container {
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        .dresscode-item img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .dresscode-item {
+            flex: 0 0 auto;
+        }
+
+    }
 </style>
 
 <div class="animate-on-load" style="text-align:center; padding:10px 20px;">
