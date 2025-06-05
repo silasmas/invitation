@@ -14,15 +14,12 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text('message');
+            $table->string( 'titre')->nullable();
             $table->timestamps();
         });
 
         Schema::table('messages', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\Event::class)->constrained()->onDelete('cascade');
-        });
-        Schema::table('messages', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\Guest::class)->constrained()->onDelete('cascade');
-
+            $table->foreignIdFor(\App\Models\Ceremonie::class)->constrained()->onDelete('cascade');
         });
     }
 

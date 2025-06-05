@@ -82,6 +82,15 @@
         height: auto;
         border-radius: 10px;
     }
+
+    .dress-image {
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .dress-image:hover {
+        transform: scale(1.2);
+    }
 </style>
 
 <div class="animate-on-load" style="text-align:center; padding:10px 20px;">
@@ -139,7 +148,8 @@
                                     </div>
                                 </div>
                                 <div class="wedding-address">
-                                    <h3 class="uppercase my-3">{{ $invitation->ceremonies->nom }}
+                                    <h3 class="uppercase my-3">{{ $invitation->ceremonies->nom }} à
+                                        {{ $invitation->ceremonies->time }}
                                     </h3>
                                     <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                 </div>
@@ -230,29 +240,28 @@
                                                             tenues.
                                                         </p>
                                                         <div
-                                                                class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
-                                                                @forelse ($tissu as $t)
-                                                                    <a href="#" data-bs-toggle="modal"
-                                                                        data-bs-target="#tissuModal{{ $loop->index }}">
-                                                                        <img src="{{ asset('storage/' . $t) }}"
-                                                                            alt="Tissu dress code" width="50px"
-                                                                            class="dress-image">
-                                                                    </a>
-                                                                @empty
-                                                                @endforelse
-                                                            </div>
-                                                            <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur
+                                                            class="d-flex justify-content-center gap-4 mb-4 overflow-auto flex-nowrap">
+                                                            @forelse ($tissu as $t)
+                                                                <a href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#tissuModal{{ $loop->index }}">
+                                                                    <img src="{{ asset('storage/' . $t) }}"
+                                                                        alt="Tissu dress code" width="50px"
+                                                                        class="dress-image">
+                                                                </a>
+                                                            @empty
+                                                            @endforelse
+                                                        </div>
+                                                        <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur
                                                             l'image pour agrandir</div>
-
                                                     @endif
                                                     @break
 
                                                     @case('tissuCouleur')
-                                                    <h4 class="mb-3"
-                                                                style="font-family: 'Georgia', cursive;
+                                                        <h4 class="mb-3"
+                                                            style="font-family: 'Georgia', cursive;
                                             border: 1px solid #777; border-radius: 50px; padding: 10px;">
-                                                                Dress code
-                                                            </h4>
+                                                            Dress code
+                                                        </h4>
                                                         @if ($couleurs)
                                                             <p class="text-muted mb-4">
                                                                 Merci de bien vouloir respecter la palette ci-dessous pour vos
@@ -457,7 +466,7 @@
             </section>
         </div>
         <!--=================================
-                 login-->
+                         login-->
 
         @include('parties.pied')
 

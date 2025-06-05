@@ -7,11 +7,13 @@ use Filament\Tables;
 use App\Models\Message;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,18 +38,15 @@ class MessageResource extends Resource
             ->schema([
                 Group::make([
                     Section::make("Formulaire")->schema([
-                    Select::make('guest_id')
-                            ->label(label: 'Invité')
-                            ->searchable()
-                            ->columnSpan(6)
-                            ->preload()
-                            ->relationship('guests', 'nom'),
-                        Select::make('event_id')
+                    TextInput::make('titre')
+                            ->label(label: 'Titre')
+                            ->columnSpan(6),
+                        Select::make('ceremonie_id')
                             ->label(label: 'Evenement')
                             ->searchable()
                             ->columnSpan(6)
                             ->preload()
-                            ->relationship('events', 'nom'),
+                            ->relationship('ceremonie', 'nom'),
                             RichEditor::make('message')
                             ->label(label: 'Message')
                             ->toolbarButtons([
@@ -76,20 +75,35 @@ class MessageResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('created_at')
+              TextColumn::make('titre')
+                    ->label(label: 'Titre')
+                    ->searchable()
+                    ->sortable(),
+            //   TextColumn::make('message')
+            //         ->label(label: 'Message')
+            //         ->limit(50)
+            //         ->searchable()
+            //         ->sortable(),
+
+TextColumn::make('message')
+    ->label('Message')
+    ->limit(50)
+                    ->searchable()
+    ->formatStateUsing(fn ($state) => Str::limit(strip_tags($state), 100)),
+
+                  TextColumn::make('ceremonie.nom')
+                        ->label(label: 'Cérémonie')
+                        ->searchable()
+                        ->numeric()
+                        ->sortable(),
+              TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+              TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('event_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('guest_id')
-                    ->numeric()
-                    ->sortable(),
             ])
             ->filters([
                 //

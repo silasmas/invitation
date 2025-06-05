@@ -9,20 +9,15 @@ class Message extends Model
 {
     use HasFactory;
 
-	public function events()
+
+	public function ceremonie()
 	{
 
-		return $this->belongsTo(\App\Models\Event::class);
+		return $this->belongsTo(\App\Models\Ceremonie::class);
 
 	}
 
 
-	public function guests()
-	{
-
-		return $this->belongsTo(\App\Models\Guest::class);
-
-	}
 
 
 	protected $guarded = [];

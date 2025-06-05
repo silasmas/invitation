@@ -7,6 +7,7 @@ use App\Models\Ceremonie;
 use App\Models\Groupe;
 use App\Models\Guest;
 use App\Models\Invitation;
+use App\Models\Message;
 use App\Services\LienCourt;
 use Carbon\Carbon;
 use Filament\Forms\Components\Group;
@@ -41,10 +42,50 @@ class SendInvitations extends Page implements HasForms
     public string $messageSms      = "Bonjour {categorie} {nom}, Vous etes attendu(e) à la cérémonie du mariage {ceremony} de {femme} et {homme} {date}.
     Merci de ne pas oublier votre QR Code pour accéder à la cérémonie.";
 
-    public $ceremonieId;
+    public ?int $ceremonieId = null;
+
     public $table;
     public $message              = '';
     public string $activeChannel = 'whatsapp'; // par défaut
+
+    // protected static string $resource = MessageResource::class;
+
+    // ID de la cérémonie sélectionnée
+    public ?int $selectedCeremonieId  = null;
+    public ?string $selectedMessageId = null;
+
+    // Tableau des messages liés à la cérémonie
+    public array $messagesDisponibles = [];
+
+    protected $listeners = ['open-message-modal'];
+
+    /**
+     * Écouteur déclenché par le Select quand une cérémonie est sélectionnée.
+     * Il récupère tous les messages liés et déclenche l’ouverture de la modale.
+     */
+    #[\Livewire\Attributes\On('open-message-modal')]
+    public function openMessageModal($ceremonyId): void
+    {
+        $this->selectedCeremonieId = $ceremonyId;
+
+        // Récupérer les messages liés à cette cérémonie
+        $this->messagesDisponibles = Message::where('ceremonie_id', $ceremonyId)->get()->toArray();
+
+        // Déclencher l’ouverture de la modale via JS
+        $this->dispatchBrowserEvent('openModal', ['id' => 'modal-select-message']);
+    }
+
+    /**
+     * Remplit le champ `message` avec le contenu choisi
+     * depuis la modale, et ferme la modale.
+     */
+    public function remplirMessage(string $contenu): void
+    {
+        $this->message = $contenu;
+
+        // Fermer la modale via JS
+        $this->dispatchBrowserEvent('closeModal', ['id' => 'modal-select-message']);
+    }
 
     public function mount(): void
     {
@@ -130,15 +171,21 @@ class SendInvitations extends Page implements HasForms
 
         if ($state) {
             $ceremony = Ceremonie::find($state);
+            // Charger les messages liés à la cérémonie
+            $this->messagesDisponibles = \App\Models\Message::where('ceremonie_id', $state)->pluck('titre', 'id')->toArray();
 
-            if ($ceremony && ! empty($ceremony->description)) {
+            // Réinitialiser le message sélectionné
+            $this->selectedMessageId = null;
+            $this->message           = '';
+
+            if ($ceremony && !empty($this->messagesDisponibles)) {
                 Log::info("Cérémonie trouvée : " . $ceremony->nom . " - Description : " . $ceremony->description);
                 Notification::make()
                     ->title("Succès")
                     ->body("Message rempli ")
                     ->success()
                     ->send();
-                // $set('message', "silas");
+                //  $set('message', "silas");
             } else {
                 Log::warning("Cérémonie sélectionnée mais sans description ou non trouvée.");
 
@@ -152,6 +199,13 @@ class SendInvitations extends Page implements HasForms
         } else {
             Notification::make()->title("Erreur")->body(" La cérémonie sélectionnée n'a pas d'ID valide.")->warning()->send();
 
+        }
+    }
+    public function updatedSelectedMessageId($value): void
+    {
+        if ($value) {
+            $contenu       = \App\Models\Message::find($value)?->message;
+            $this->message = $contenu ?? '';
         }
     }
     protected function getFormSchema(): array
@@ -188,35 +242,33 @@ class SendInvitations extends Page implements HasForms
                                     ->searchable()
                                     ->multiple()
                                     ->required(),
+                                // Sélection de la cérémonie
                                 Select::make('ceremonieId')
                                     ->label('Choisir une cérémonie')
-                                    ->options(Ceremonie::pluck('nom', 'id'))
+                                    ->columnSpan(4)
+                                    ->options(Ceremonie::pluck('nom', 'id')->toArray()) // options sous forme [id => nom]
                                     ->searchable()
-                                    ->reactive() // 🔥 Rend le champ dynamique
-                                    ->columnSpan(6)
-                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                        if ($get('activeChannel') === 'whatsapp') {
-                                            $ceremony = Ceremonie::find($state);
-
-                                            if ($ceremony && isset($ceremony->description)) { // 🔹 Vérifie si la cérémonie existe et si `description` est défini
-                                                $set('message', $ceremony->description);
-                                            } else {
-                                                $set('message', ''); // 🔹 Met un message vide si la cérémonie n’a pas de description
-                                            }
-                                        } else {
-                                            $set('messageSms', $this->messageSms);
-                                            $set('message', $this->messageSms);
-                                        }
-                                    })
+                                    ->reactive() // Rend le champ dynamique
+                                    ->afterStateUpdated(fn($state) =>
+                                        // Déclenche l’événement Livewire personnalisé
+                                        $this->dispatch('open-message-modal', ceremonieId: $state)
+                                    )
                                     ->required(),
+
                                 Select::make('table')
-                                 ->visible(fn($get) => $get('activeChannel') === 'whatsapp')
+                                    ->visible(fn($get) => $get('activeChannel') === 'whatsapp')
                                     ->label('Choisir une table')
                                     ->options(Groupe::pluck('nom', 'id'))
                                     ->searchable()
-                                    ->columnSpan(6)
+                                    ->columnSpan(4)
                                     ->required(),
-
+                                Select::make('selectedMessageId')
+                                    ->label('Choisir un message lié')
+                                    ->options(fn() => $this->messagesDisponibles)
+                                    ->searchable()
+                                    ->hidden(fn() => empty($this->messagesDisponibles)) // Caché tant qu’aucun message n’est dispo
+                                    ->reactive()
+                                    ->columnSpan(4),
                                 RichEditor::make('message')
                                     ->visible(fn($get) => $get('activeChannel') === 'whatsapp')
                                     ->label(label: 'Message personnalisé')
@@ -375,17 +427,11 @@ class SendInvitations extends Page implements HasForms
 
         ];
     }
-    protected function getFormActions(): array
-    {
-        return [
-            // Action::make('envoyer')
-            //     ->label('Envoyer')
-            //     ->action(fn() => $this->submit())
-            //     ->disabled(fn() => $this->activeChannel === 'sms' && $this->smsCount > 3)
-            //     ->button()
-            //     ->color('primary'),
-        ];
-    }
+  protected function getFormActions(): array
+{
+    return []; // Empêche l’apparition du bouton de soumission par défaut
+}
+
 
     public function getCleanMessageProperty(): string
     {
@@ -599,15 +645,15 @@ class SendInvitations extends Page implements HasForms
                             'moyen'     => $moyen,
                         ]
                     );
-                }else{
-                     Invitation::updateOrCreate(
+                } else {
+                    Invitation::updateOrCreate(
                         [
                             'guest_id'     => $guest->id,
                             'ceremonie_id' => $this->ceremonieId,
                         ],
                         [
-                            'rappel'    =>true,
-                            'msgRappel'   => $customMessage,
+                            'rappel'    => true,
+                            'msgRappel' => $customMessage,
                         ]
                     );
                 }
