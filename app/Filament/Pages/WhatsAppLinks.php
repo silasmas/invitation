@@ -20,16 +20,19 @@ class WhatsAppLinks extends Page
 
     public Collection $guests;
     public Collection $invalidGuests;
+     public ?int $ceremonieId = null;
     public string $messageTemplate = "";
 
     public function mount()
     {
 
             $this->messageTemplate = session( 'messageTxt',[]);
-//
+            $this->ceremonieId = session( 'ceremonie');
+// dd($this->ceremonieId);
         if (request()->isMethod('post')) {
             session()->forget('guest_ids');
             session()->forget('messageTxt');
+            session()->forget('ceremonie');
             $this->guests = collect(); // vide la liste
             return;
         }

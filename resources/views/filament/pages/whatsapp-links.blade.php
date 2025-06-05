@@ -19,17 +19,16 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach ($guests as $guest)
                 @php
-
-                    $invitation = $guest->invitation->first();
-                    $ceremonieId = $invitation->ceremonies->id ?? null;
+                    $invitation = $guest->invitation->firstWhere('ceremonie_id', $this->ceremonieId);
+                    // dd($invitation."--".$this->ceremonieId);
+                    $this->ceremonieId = $invitation->ceremonies->id ?? null;
 
                     if ($invitation) {
-                        // dd($ceremonieId);
                         // 1. Générer le lien long (via la route définie)
                         $lienLong = route('invitation.show', ['reference' => $invitation->reference]);
 
                         // 2. (Facultatif) Raccourcir le lien
-                         $lienCourt = \App\Services\LienCourt::generate($invitation->reference, $ceremonieId); // on le crée juste après
+                         $lienCourt = \App\Services\LienCourt::generate($invitation->reference, $this->ceremonieId); // on le crée juste après
                         //$lienCourt = App\Models\ShortLink::where('ceremonie_id', $ceremonieId)
                             //->where('reference', $invitation->reference)->first()->code;
                         // dd($lienCourt);

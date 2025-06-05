@@ -36,7 +36,9 @@ Route::get('/model', function () {
 });
 
 Route::get('/i/{code}', function ($code) {
+
     $link = ShortLink::where('code', $code)->firstOrFail();
+    // dd($link);
     return Redirect::route('invitation.show', ['reference' => $link->reference]);
 });
 Route::post('/invitations/accept', [InvitationController::class, 'accept']);

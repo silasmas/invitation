@@ -156,7 +156,7 @@ class SendInvitations extends Page implements HasForms
             })->values();
 
         match ($this->activeChannel) {
-            'whatsapp' => $this->envoyerViaWhatsapp($guests, $this->message),
+            'whatsapp' => $this->envoyerViaWhatsapp($guests, $this->message,$this->ceremonieId),
             'email' => $this->envoyerViaEmail($guests),
             'sms' => $this->envoyerViaSms($guests),
             'enDure' => $this->envoyerEnDure($guests),
@@ -458,12 +458,13 @@ class SendInvitations extends Page implements HasForms
         }
     }
 
-    public function envoyerViaWhatsapp($guests, $messageTxt)
+    public function envoyerViaWhatsapp($guests, $messageTxt,$ceremonie)
     {
         // Sauvegarder les invités valides dans la session
         session()->put('guest_ids', $guests->pluck('id')->toArray());
         session()->put('messageTxt', $messageTxt);
-
+        session()->put('ceremonie', $ceremonie);
+        // dd($ceremonie);
         // ✅ Rediriger vers la page des liens
         return redirect()->route('filament.admin.pages.whatsapp');
 
@@ -639,12 +640,12 @@ class SendInvitations extends Page implements HasForms
                         [
                             'guest_id'     => $guest->id,
                             'ceremonie_id' => $this->ceremonieId,
+                            'reference' => $reference,
                         ],
                         [
                             'groupe_id' => $this->table,
                             'status'    => 'send',
                             'message'   => $customMessage,
-                            'reference' => $reference,
                             'moyen'     => $moyen,
                         ]
                     );
