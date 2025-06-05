@@ -78,19 +78,21 @@ public function customValidationMessages()
     public function rules(): array
     {
         return [
-            '*.nom' => 'nullable|string|max:255',
-            '*.type' => 'nullable|string|max:255',
-            // '*.email' =>  [
-            //     'nullable',
-            //     'email',
-            //     Rule::unique('guests', 'email')->where(fn ($query) => $query->where('event_id', $this->eventId)),
-            // ],
+            '*.nom'   => ['nullable', 'string', 'max:255'],
+            '*.type'  => ['nullable', 'string', 'max:255'],
+            '*.email' => [
+                'nullable',
+                'email',
+                Rule::unique('guests', 'email')->where(fn ($query) => $query->where('event_id', $this->eventId)),
+            ],
             '*.phone' => [
                 'nullable',
-                // 'regex:/^\+?[0-9]{8,15}$/',
-                // 'starts_with:+,0,1,2,3,4,5,6,7,8,9',
+                'string',
+                'max:20',
+                'regex:/^\+?[0-9\-\s()]{8,20}$/'
             ],
         ];
+
     }
      // Capturer les erreurs de validation
      public function onFailure(Failure ...$failures)

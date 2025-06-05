@@ -156,7 +156,7 @@ class SendInvitations extends Page implements HasForms
             })->values();
 
         match ($this->activeChannel) {
-            'whatsapp' => $this->envoyerViaWhatsapp($guests, $this->message,$this->ceremonieId),
+            'whatsapp' => $this->envoyerViaWhatsapp($guests, $this->message, $this->ceremonieId),
             'email' => $this->envoyerViaEmail($guests),
             'sms' => $this->envoyerViaSms($guests),
             'enDure' => $this->envoyerEnDure($guests),
@@ -178,7 +178,7 @@ class SendInvitations extends Page implements HasForms
             $this->selectedMessageId = null;
             $this->message           = '';
 
-            if ($ceremony && !empty($this->messagesDisponibles)) {
+            if ($ceremony && ! empty($this->messagesDisponibles)) {
                 Log::info("Cérémonie trouvée : " . $ceremony->nom . " - Description : " . $ceremony->description);
                 Notification::make()
                     ->title("Succès")
@@ -233,12 +233,24 @@ class SendInvitations extends Page implements HasForms
                                 Select::make('selectedGuests')
                                     ->label('Invités (WhatsApp)')
                                     ->columnSpan(12)
+                                    // ->orderBy('nom')
                                     ->options(
                                         Guest::whereNotNull('phone')
-                                            ->where('phone', '!=', '')
-                                            ->where('phone', 'REGEXP', '^\\+[0-9]{12}$')
-                                            ->pluck('nom', 'id')
+                                            ->whereRaw("TRIM(phone) != ''")
+                                            ->get()
+                                            ->mapWithKeys(function ($guest) {
+                                                return [
+                                                    $guest->id => "{$guest->nom} (" . $guest->phone . ")",
+                                                ];
+                                            })
+                                            ->toArray()
                                     )
+                                // ->options(
+                                //     Guest::whereNotNull('phone')
+                                //         ->where('phone', '!=', '')
+                                //         ->where('phone', 'REGEXP', '^\\+[0-9]{12}$')
+                                //         ->pluck('nom', 'id')
+                                // )
                                     ->searchable()
                                     ->multiple()
                                     ->required(),
@@ -427,11 +439,10 @@ class SendInvitations extends Page implements HasForms
 
         ];
     }
-  protected function getFormActions(): array
-{
-    return []; // Empêche l’apparition du bouton de soumission par défaut
-}
-
+    protected function getFormActions(): array
+    {
+        return []; // Empêche l’apparition du bouton de soumission par défaut
+    }
 
     public function getCleanMessageProperty(): string
     {
@@ -458,7 +469,7 @@ class SendInvitations extends Page implements HasForms
         }
     }
 
-    public function envoyerViaWhatsapp($guests, $messageTxt,$ceremonie)
+    public function envoyerViaWhatsapp($guests, $messageTxt, $ceremonie)
     {
         // Sauvegarder les invités valides dans la session
         session()->put('guest_ids', $guests->pluck('id')->toArray());
@@ -576,7 +587,7 @@ class SendInvitations extends Page implements HasForms
 
     public function Invitation(): bool
     {
-    //    dd($this->ceremonieId);
+        //    dd($this->ceremonieId);
         try {
             $ceremony = Ceremonie::find($this->ceremonieId);
             $guests   = Guest::whereIn('id', $this->selectedGuests)->get();
@@ -615,8 +626,8 @@ class SendInvitations extends Page implements HasForms
                 } else {
                     $date = "le " . $ceremony->date->format('d/m/Y') . " à " . $ceremony->date->format('H\hi');
                 }
-                // dd($reference."----".$this->ceremonieId);
-                $lien = LienCourt::generate($reference,$this->ceremonieId); // on le crée juste après
+                                                                             // dd($reference."----".$this->ceremonieId);
+                $lien = LienCourt::generate($reference, $this->ceremonieId); // on le crée juste après
 
                 // Message personnalisé
 
@@ -640,7 +651,7 @@ class SendInvitations extends Page implements HasForms
                         [
                             'guest_id'     => $guest->id,
                             'ceremonie_id' => $this->ceremonieId,
-                            'reference' => $reference,
+                            'reference'    => $reference,
                         ],
                         [
                             'groupe_id' => $this->table,
@@ -735,8 +746,8 @@ class SendInvitations extends Page implements HasForms
 
         $guest    = Guest::find($this->selectedGuests[0]); // Juste un invité pour l'aperçu
         $ceremony = Ceremonie::with('event')->find($this->ceremonieId);
-        // dd("ref----".$this->ceremonieId);
-        $lien     = LienCourt::generate("reference",$this->ceremonieId); // on le crée juste après
+                                                                      // dd("ref----".$this->ceremonieId);
+        $lien = LienCourt::generate("reference", $this->ceremonieId); // on le crée juste après
 
         if (! $guest || ! $ceremony) {
             return null;
