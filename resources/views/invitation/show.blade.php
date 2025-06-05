@@ -240,9 +240,9 @@
                                                                     </a>
                                                                 @empty
                                                                 @endforelse
-                                                                <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur
-                                                                l'image pour agrandir</div>
                                                             </div>
+                                                            <div class="text-center mt-2" style="font-size: 12px;">Cliquez sur
+                                                            l'image pour agrandir</div>
 
                                                     @endif
                                                     @break
