@@ -29,7 +29,10 @@
                         $lienLong = route('invitation.show', ['reference' => $invitation->reference]);
 
                         // 2. (Facultatif) Raccourcir le lien
-                        $lienCourt = \App\Services\LienCourt::generate($invitation->reference, $ceremonieId); // on le crée juste après
+                         $lienCourt = \App\Services\LienCourt::generate($invitation->reference, $ceremonieId); // on le crée juste après
+                        //$lienCourt = App\Models\ShortLink::where('ceremonie_id', $ceremonieId)
+                            //->where('reference', $invitation->reference)->first()->code;
+                        // dd($lienCourt);
 
                         // 3. Créer le message en insérant {nom}, {categorie}, {lien}, etc.
                         // $messageHtml = str_replace(

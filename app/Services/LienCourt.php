@@ -10,8 +10,7 @@ class LienCourt
     public static function generate(string $reference, int $ceremonieId): string
 {
     // Vérifie s’il existe déjà un lien pour cette référence et cérémonie
-    $existing = ShortLink::where('reference', $reference)
-        ->where('ceremonie_id', $ceremonieId)
+    $existing = ShortLink::where([['ceremonie_id', $ceremonieId],['reference', $reference]])
         ->first();
 
     if ($existing) {

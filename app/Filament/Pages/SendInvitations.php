@@ -734,7 +734,7 @@ class SendInvitations extends Page implements HasForms
 
         $guest    = Guest::find($this->selectedGuests[0]); // Juste un invité pour l'aperçu
         $ceremony = Ceremonie::with('event')->find($this->ceremonieId);
-        dd("ref----".$this->ceremonieId);
+        // dd("ref----".$this->ceremonieId);
         $lien     = LienCourt::generate("reference",$this->ceremonieId); // on le crée juste après
 
         if (! $guest || ! $ceremony) {
