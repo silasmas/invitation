@@ -575,7 +575,7 @@ class SendInvitations extends Page implements HasForms
 
     public function Invitation(): bool
     {
-        // dd($this);
+    //    dd($this->ceremonieId);
         try {
             $ceremony = Ceremonie::find($this->ceremonieId);
             $guests   = Guest::whereIn('id', $this->selectedGuests)->get();
@@ -583,7 +583,9 @@ class SendInvitations extends Page implements HasForms
             foreach ($guests as $guest) {
                 // Générer une référence unique
                 do {
-                    $reference = "INV-" . date('Ymd') . "-" . strtoupper(Str::random(6));
+                    // $reference = "INV-" . date('Ymd') . "-" . strtoupper(Str::random(6));
+                    $reference = "INV-{$this->ceremonieId}-" . date('Ymd') . "-" . strtoupper(Str::random(6));
+
                 } while (Invitation::where('reference', $reference)->exists());
                 $msg   = "";
                 $moyen = "";
@@ -612,7 +614,8 @@ class SendInvitations extends Page implements HasForms
                 } else {
                     $date = "le " . $ceremony->date->format('d/m/Y') . " à " . $ceremony->date->format('H\hi');
                 }
-                $lien = LienCourt::generate($reference); // on le crée juste après
+                // dd($reference."----".$this->ceremonieId);
+                $lien = LienCourt::generate($reference,$this->ceremonieId); // on le crée juste après
 
                 // Message personnalisé
 
@@ -731,7 +734,8 @@ class SendInvitations extends Page implements HasForms
 
         $guest    = Guest::find($this->selectedGuests[0]); // Juste un invité pour l'aperçu
         $ceremony = Ceremonie::with('event')->find($this->ceremonieId);
-        $lien     = LienCourt::generate("reference"); // on le crée juste après
+        dd("ref----".$this->ceremonieId);
+        $lien     = LienCourt::generate("reference",$this->ceremonieId); // on le crée juste après
 
         if (! $guest || ! $ceremony) {
             return null;

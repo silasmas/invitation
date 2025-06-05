@@ -19,14 +19,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach ($guests as $guest)
                 @php
+
                     $invitation = $guest->invitation->first();
+                    $ceremonieId = $invitation->ceremonies->id ?? null;
 
                     if ($invitation) {
+                        // dd($ceremonieId);
                         // 1. Générer le lien long (via la route définie)
                         $lienLong = route('invitation.show', ['reference' => $invitation->reference]);
 
                         // 2. (Facultatif) Raccourcir le lien
-                        $lienCourt = \App\Services\LienCourt::generate($invitation->reference); // on le crée juste après
+                        $lienCourt = \App\Services\LienCourt::generate($invitation->reference, $ceremonieId); // on le crée juste après
 
                         // 3. Créer le message en insérant {nom}, {categorie}, {lien}, etc.
                         // $messageHtml = str_replace(
