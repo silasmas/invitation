@@ -63,15 +63,21 @@ class InvitationsResource extends Resource
                             ->preload()
                             ->relationship('ceremonies', 'nom'),
 
+                        Select::make('groupe_id')
+                            ->label(label: 'Table')
+                            ->searchable()
+                            ->columnSpan(4)
+                            ->preload()
+                            ->relationship('groupe', 'nom'),
                         TagsInput::make('boissons')
                             ->label('Les Boissons')
                             ->placeholder('vous pouvez ajouté pluslieurs boisson...')
                             ->separator(',')
                             ->saveRelationshipsWhenHidden() // Sauvegarde même si le champ est caché
-                            ->columnSpan(4),
+                            ->columnSpan(3),
                         Select::make('status')
                             ->label('Etat')
-                            ->columnSpan(4)
+                            ->columnSpan(3)
                             ->required()
                             ->options([
                                 'pedding' => 'Entrant',
@@ -81,7 +87,7 @@ class InvitationsResource extends Resource
                             ]),
                         Select::make('moyen')
                             ->label('Moyen')
-                            ->columnSpan(4)
+                            ->columnSpan(3)
                             ->required()
                             ->options([
                                 'enDure' => 'En dure',
@@ -91,7 +97,7 @@ class InvitationsResource extends Resource
                             ]),
                         TextInput::make('cadeau')
                             ->label("Cadeau")
-                            ->columnSpan(4),
+                            ->columnSpan(3),
                              RichEditor::make('text')
                             ->label(label: "Reponse de l'invité")
                             ->helperText("Réponse de l'invité, visible uniquement par l'administrateur")
