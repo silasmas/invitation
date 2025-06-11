@@ -95,12 +95,8 @@ class InvitationsResource extends Resource
                                 'sms'  => 'Email',
                                 'mail'  => 'SMS',
                             ]),
-                        TextInput::make('cadeau')
-                            ->label("Cadeau")
-                            ->columnSpan(3),
-                             RichEditor::make('text')
-                            ->label(label: "Reponse de l'invité")
-                            ->helperText("Réponse de l'invité, visible uniquement par l'administrateur")
+                             RichEditor::make('message')
+                            ->label(label: "Message de l'invitaté")
                             ->toolbarButtons([
                                 'attachFiles',
                                 'blockquote',
@@ -117,9 +113,13 @@ class InvitationsResource extends Resource
                                 'underline',
                                 'undo',
                             ])
-                            ->columnSpan(6),
-                             RichEditor::make('message')
-                            ->label(label: "Message de l'invitaté")
+                            ->columnSpan(12),
+                        TextInput::make('cadeau')
+                            ->label("Cadeau")
+                            ->columnSpan(3),
+                             RichEditor::make('text')
+                            ->label(label: "Reponse de l'invité")
+                            ->helperText("Réponse de l'invité, visible uniquement par l'administrateur")
                             ->toolbarButtons([
                                 'attachFiles',
                                 'blockquote',
@@ -156,7 +156,7 @@ class InvitationsResource extends Resource
                                 'underline',
                                 'undo',
                             ])
-                            ->columnSpan(12),
+                            ->columnSpan(6),
                         Toggle::make('confirmation')
                             ->columnSpan(3)
                             ->onColor('success')
