@@ -95,6 +95,9 @@ class InvitationsResource extends Resource
                                 'sms'  => 'Email',
                                 'mail'  => 'SMS',
                             ]),
+                        TextInput::make('cadeau')
+                            ->label("Cadeau")
+                            ->columnSpan(3),
                              RichEditor::make('message')
                             ->label(label: "Message de l'invitaté")
                             ->toolbarButtons([
@@ -114,9 +117,6 @@ class InvitationsResource extends Resource
                                 'undo',
                             ])
                             ->columnSpan(12),
-                        TextInput::make('cadeau')
-                            ->label("Cadeau")
-                            ->columnSpan(3),
                              RichEditor::make('text')
                             ->label(label: "Reponse de l'invité")
                             ->helperText("Réponse de l'invité, visible uniquement par l'administrateur")
