@@ -175,16 +175,16 @@
                             <div class="wedding-card-head text-center floral-top animate-on-load">
                                 <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
                             </div>
-                            <div class="row">
-                                <div class="wedding-address">
-                                <h3 class="uppercase my-3">Table :
-                                    <span class="theme-color text-center">
-                                        {{ $invitation->groupe->nom }}
-                                    </span>
-                                </h3>
-                            </div>
-                            </div>
                             <div class="wedding-card-body text-center position-relative mb-50">
+                                <div class="row">
+                                    <div class="wedding-address">
+                                        <h3 class="uppercase my-3">Table :
+                                            <span class="theme-color text-center">
+                                                {{ $invitation->groupe->nom }}
+                                            </span>
+                                        </h3>
+                                    </div>
+                                </div>
                                 <h1 class="my-2 mb-30 mt-30">Invitation</h1>
                                 <div class="bg-image couple-photo animate-on-load"
                                     data-aos="zoom-in"data-aos-delay="200">
@@ -308,8 +308,9 @@
                                                                     data-bs-target="#tissuModal{{ $index }}"
                                                                     class="dresscode-item">
                                                                     <img src="{{ asset('storage/' . $t) }}"
-                                                                      data-bs-toggle="modal"
-                                                                    data-bs-target="#tissuModal{{ $index }}"  alt="Tissu dress code">
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#tissuModal{{ $index }}"
+                                                                        alt="Tissu dress code">
                                                                 </a>
                                                             @endforeach
                                                         </div>
@@ -350,8 +351,9 @@
                                                                     data-bs-target="#tissuModal{{ $index }}"
                                                                     class="dresscode-item">
                                                                     <img src="{{ asset('storage/' . $t) }}"
-                                                                      data-bs-toggle="modal"
-                                                                    data-bs-target="#tissuModal{{ $index }}"  alt="Tissu dress code">
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#tissuModal{{ $index }}"
+                                                                        alt="Tissu dress code">
                                                                 </a>
                                                             @endforeach
                                                         </div>
@@ -423,7 +425,8 @@
 
                                     @case('accept')
                                         <button type="button" class="btn rsvp-btn mt-10  rounded" data-bs-toggle="modal"
-                                            data-bs-target="#map" style="border-radius: 50px !important">Voir le QRCODE</button>
+                                            data-bs-target="#map" style="border-radius: 50px !important">Voir le
+                                            QRCODE</button>
                                     @break
 
                                     @default
