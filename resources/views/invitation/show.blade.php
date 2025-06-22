@@ -176,7 +176,7 @@
                                 <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
                             </div>
                             <div class="wedding-card-body position-relative mb-50">
-                                <h1 class="my-2 mb-30 mt-30 text-center ">Invitation</h1>
+                                <h1 class="my-2 mb-15 mt-30 text-center ">Invitation</h1>
                                 <!-- Ligne contenant la table, alignée à gauche -->
                                 <div class="row justify-content-start">
                                     <div class="wedding-address text-start mt-3">
