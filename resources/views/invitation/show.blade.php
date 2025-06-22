@@ -176,16 +176,16 @@
                                 <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
                             </div>
                             <div class="wedding-card-body text-center position-relative mb-50">
+                                <h1 class="my-2 mb-30 mt-30">Invitation</h1>
                                 <div class="row">
                                     <div class="wedding-address">
                                         <h3 class="uppercase my-3">Table :
-                                            <span class="theme-color text-center">
+                                            <span class="theme-color">
                                                 {{ $invitation->groupe->nom }}
                                             </span>
                                         </h3>
                                     </div>
                                 </div>
-                                <h1 class="my-2 mb-30 mt-30">Invitation</h1>
                                 <div class="bg-image couple-photo animate-on-load"
                                     data-aos="zoom-in"data-aos-delay="200">
                                     <img src="{{ asset('storage/' . $invitation->ceremonies->image) }}" alt=""
