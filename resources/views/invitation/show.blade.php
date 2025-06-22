@@ -175,6 +175,15 @@
                             <div class="wedding-card-head text-center floral-top animate-on-load">
                                 <img src="{{ asset('assets/site/demo-one-page/wedding-card/images/top-bg.png') }}">
                             </div>
+                            <div class="row">
+                                <div class="wedding-address">
+                                <h3 class="uppercase my-3">Table :
+                                    <span class="theme-color text-center">
+                                        {{ $invitation->groupe->nom }}
+                                    </span>
+                                </h3>
+                            </div>
+                            </div>
                             <div class="wedding-card-body text-center position-relative mb-50">
                                 <h1 class="my-2 mb-30 mt-30">Invitation</h1>
                                 <div class="bg-image couple-photo animate-on-load"
