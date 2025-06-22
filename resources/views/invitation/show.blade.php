@@ -180,7 +180,7 @@
                                 <div class="row">
                                     <div class="wedding-address">
                                         <h3 class="uppercase my-3">Table :
-                                            <span class="theme-color">
+                                            <span class="theme-color text-left">
                                                 {{ $invitation->groupe->nom }}
                                             </span>
                                         </h3>
