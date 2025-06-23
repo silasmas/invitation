@@ -215,7 +215,7 @@
                                 <!-- Ligne contenant la table, alignée à gauche -->
                                 <div class="row justify-content-start">
                                     <div class="wedding-address text-start mt-3">
-                                        <h2 class="uppercase my-3 badge rounded-pill px-4 py-2 text-white"
+                                        <h2 class="uppercase my-3 badge rounded-pill px-4 py-2 text-white texte-center"
                                                 style="background-color: #E2407E;">
                                             Table :
                                             <span >
