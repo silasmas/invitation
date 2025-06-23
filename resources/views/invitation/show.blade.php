@@ -215,13 +215,13 @@
                                 <!-- Ligne contenant la table, alignée à gauche -->
                                 <div class="row justify-content-start">
                                     <div class="wedding-address text-start mt-3">
-                                        <h3 class="uppercase my-3 badge rounded-pill px-4 py-2 text-white"
+                                        <h2 class="uppercase my-3 badge rounded-pill px-4 py-2 text-white"
                                                 style="background-color: #E2407E;">
                                             Table :
                                             <span >
                                                 {{ $invitation->groupe->nom }}
                                             </span>
-                                        </h3>
+                                        </h2>
                                     </div>
                                 </div>
                                 @if (!empty($invitation->ceremonies->dressCode))
