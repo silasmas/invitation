@@ -215,7 +215,7 @@
                                 <!-- Ligne contenant la table, alignée à gauche -->
                                 <div class="row justify-content-start">
                                     <div class="wedding-address text-center mt-4">
-                                        <h2 class="badge rounded-pill d-block d-sm-inline-block mx-auto text-white px-3 px-md-5 py-2 py-md-3 fs-6 fs-md-4"
+                                        <h2 class="badge rounded-pill d-block d-sm-inline-block mx-auto text-white px-3 px-md-4 py-2 py-md-4 fs-6 fs-md-4"
                                             style="background-color: #E2407E;">
                                             Table :
                                             <span>
