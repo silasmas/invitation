@@ -177,17 +177,7 @@
                             </div>
                             <div class="wedding-card-body position-relative mb-50">
                                 <h1 class="my-2 mb-15 mt-30 text-center ">Invitation</h1>
-                                <!-- Ligne contenant la table, alignée à gauche -->
-                                <div class="row justify-content-start">
-                                    <div class="wedding-address text-start mt-3">
-                                        <h3 class="uppercase my-3 text-decoration-underline">
-                                            Table :
-                                            <span class="theme-color">
-                                                {{ $invitation->groupe->nom }}
-                                            </span>
-                                        </h3>
-                                    </div>
-                                </div>
+
                                 <div class="bg-image couple-photo animate-on-load"
                                     data-aos="zoom-in"data-aos-delay="200">
                                     <img src="{{ asset('storage/' . $invitation->ceremonies->image) }}" alt=""
@@ -222,40 +212,17 @@
                                     </h3>
                                     <h5> {!! $invitation->ceremonies->adresse !!}</h5>
                                 </div>
-                                {{-- @switch($invitation->ceremonies->nom)
-                                    @case('Coutumier')
-
-                                        <div class="wedding-address">
-                                            <h3 class="uppercase my-3">{{ $invitation->ceremonies->nom }}
-                                            </h3>
-                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
-                                        </div>
-                                    @break
-
-                                    @case('Civile')
-
-                                        <div class="wedding-address">
-                                            <h3 class="uppercase my-3">{{ $invitation->ceremonies->nom }}
-                                            </h3>
-                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
-                                        </div>
-                                    @break
-
-                                    @case('Réligieux')
-
-                                        <div class="wedding-address">
-                                            <h3 class="uppercase my-3"> {{ $invitation->ceremonies->nom }}
-                                            </h3>
-                                            <h5> {!! $invitation->ceremonies->adresse !!}</h5>
-                                        </div>
-                                    @break
-                                    @case('Soirée dansante')
-
-
-                                    @break
-
-                                    @default
-                                @endswitch --}}
+                                <!-- Ligne contenant la table, alignée à gauche -->
+                                <div class="row justify-content-start">
+                                    <div class="wedding-address text-start mt-3">
+                                        <h3 class="uppercase my-3 text-decoration-underline">
+                                            Table :
+                                            <span class="theme-color">
+                                                {{ $invitation->groupe->nom }}
+                                            </span>
+                                        </h3>
+                                    </div>
+                                </div>
                                 @if (!empty($invitation->ceremonies->dressCode))
                                     @php
 
