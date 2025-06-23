@@ -216,7 +216,7 @@
                                 <div class="row justify-content-start">
                                     <div class="wedding-address text-start mt-3">
                                         <h3 class="uppercase my-3 badge rounded-pill px-4 py-2 text-white"
-                                                style="background-color: #493056;">
+                                                style="background-color: #E2407E;">
                                             Table :
                                             <span >
                                                 {{ $invitation->groupe->nom }}
