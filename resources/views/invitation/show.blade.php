@@ -215,10 +215,10 @@
                                 <!-- Ligne contenant la table, alignée à gauche -->
                                 <div class="row justify-content-start">
                                     <div class="wedding-address text-center mt-4">
-                                        <h2 class="uppercase my-3 badge rounded-pill px-5 py-3 fs-4 text-white texte-center"
-                                                style="background-color: #E2407E;">
+                                        <h2 class="badge rounded-pill d-block d-sm-inline-block mx-auto text-white px-3 px-md-5 py-2 py-md-3 fs-6 fs-md-4"
+                                            style="background-color: #E2407E;">
                                             Table :
-                                            <span >
+                                            <span>
                                                 {{ $invitation->groupe->nom }}
                                             </span>
                                         </h2>
