@@ -12,6 +12,7 @@ use Filament\Forms\Components\View;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Group;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -290,11 +291,28 @@ class GuestResource extends Resource
         ];
     }
 
-     public static function getEloquentQuery(): Builder
+    public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->whereHas('invitation', function (Builder $q) {
-                $q->where('status', '!=', 'termine');
+        $query = parent::getEloquentQuery();
+        $user = Auth::user();
+
+        // Vérifier si l'utilisateur est super_admin
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+            ? $user->hasRole('super_admin')
+            : optional($user->role)->name === 'super_admin');
+
+        if ($isSuperAdmin) {
+            return $query;
+        }
+
+        // Pour les utilisateurs normaux : afficher uniquement les invités
+        // liés à des cérémonies avec un événement actif (status != 'termine')
+        return $query->whereHas('invitation', function (Builder $q) {
+            $q->whereHas('ceremonies', function (Builder $q2) {
+                $q2->whereHas('event', function (Builder $q3) {
+                    $q3->where('status', '!=', 'termine');
+                });
             });
+        });
     }
 }

@@ -112,6 +112,22 @@ class EventsResource extends Resource
                 ->label("Lieu")
                  ->searchable()
                 ->sortable(),
+                 TextColumn::make('status')
+                    ->label('Status')
+                    ->badge() // active le badge
+                    ->color(fn(string $state): string => match ($state) {
+                        'brouilons'                         => 'warning',
+                        'actif'                            => 'success',
+                        'termine'                          => 'danger',
+                        default                           => 'gray',
+                    })->formatStateUsing(fn(string $state) => match ($state) {
+                   'brouilons'                         => 'En brouillons',
+                        'actif'                            => 'Actif',
+                        'termine'                          => 'Terminé',
+                    default                                => ucfirst($state)
+                })
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make(name: 'user.name')
                 ->label("Organisateur")
                  ->searchable()
