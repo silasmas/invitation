@@ -177,17 +177,17 @@ class EventsResource extends Resource
         return $query->where('status', '!=', 'termine');
     }
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        $user = Auth::user();
-        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
-            ? $user->hasRole('super_admin')
-            : optional($user->role)->name === 'super_admin');
+        public static function shouldRegisterNavigation(): bool
+        {
+            $user = Auth::user();
+            $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+                ? $user->hasRole('super_admin')
+                : optional($user->role)->name === 'super_admin');
 
-        if ($isSuperAdmin) {
-            return true;
+            if ($isSuperAdmin) {
+                return true;
+            }
+
+            return \App\Models\Event::where('status', '!=', 'termine')->exists();
         }
-
-        return \App\Models\Event::where('status', '!=', 'termine')->exists();
-    }
 }

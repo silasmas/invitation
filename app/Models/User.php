@@ -44,7 +44,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
+ public function isSuperAdmin(): bool
+    {
+        return method_exists($this, 'hasRole') ? $this->hasRole('super_admin') : optional($this->role)->name === 'super_admin';
+    }
 	public function event()
 	{
 
