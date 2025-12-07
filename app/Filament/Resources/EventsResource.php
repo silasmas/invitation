@@ -7,12 +7,14 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EventsResource\Pages;
 use App\Filament\Resources\EventsResource\Widgets\EventStats;
 
@@ -146,4 +148,46 @@ class EventsResource extends Resource
         ];
     }
 
+    //   // Masquer les événements terminés du listing Filament
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()->where('status', '!=', 'termine');
+    //     // ou : parent::getEloquentQuery()->notTermine();
+    // }
+
+    // // Optionnel : n'afficher le menu que s'il y a des événements actifs
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     return Event::where('status', '!=', 'termine')->exists();
+    // }
+ public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = Auth::user();
+
+        // Si l'utilisateur est super_admin, montrer tout
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+            ? $user->hasRole('super_admin')
+            : optional($user->role)->name === 'super_admin');
+
+        if ($isSuperAdmin) {
+            return $query;
+        }
+
+        return $query->where('status', '!=', 'termine');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = Auth::user();
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+            ? $user->hasRole('super_admin')
+            : optional($user->role)->name === 'super_admin');
+
+        if ($isSuperAdmin) {
+            return true;
+        }
+
+        return \App\Models\Event::where('status', '!=', 'termine')->exists();
+    }
 }

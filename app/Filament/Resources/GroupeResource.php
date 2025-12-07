@@ -13,6 +13,7 @@ use Filament\Forms\Components\View;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Group;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -240,4 +241,31 @@ class GroupeResource extends Resource
             'edit' => Pages\EditGroupe::route('/{record}/edit'),
         ];
     }
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()
+    //         ->whereHas('ceremonie', function (Builder $q) {
+    //             $q->where('status', '!=', 'termine');
+    //         });
+    // }
+
+     public static function getEloquentQuery(): Builder
+{
+    $query = parent::getEloquentQuery();
+    $user = Auth::user();
+
+    $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+        ? $user->hasRole('super_admin')
+        : optional($user->role)->name === 'super_admin');
+
+    if ($isSuperAdmin) {
+        return $query;
+    }
+
+    return $query->whereHas('ceremonie', function (Builder $q) {
+        $q->whereHas('event', function (Builder $q2) {
+            $q2->where('status', '!=', 'termine');
+        });
+    });
+}
 }

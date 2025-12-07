@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\GuestResource\Pages;
 
 class GuestResource extends Resource
@@ -287,5 +288,13 @@ class GuestResource extends Resource
             'create' => Pages\CreateGuest::route('/create'),
             'edit'   => Pages\EditGuest::route('/{record}/edit'),
         ];
+    }
+
+     public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('invitation', function (Builder $q) {
+                $q->where('status', '!=', 'termine');
+            });
     }
 }

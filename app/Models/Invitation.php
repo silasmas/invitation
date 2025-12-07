@@ -6,6 +6,7 @@ use App\Models\Ceremonie;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Invitation extends Model
@@ -38,12 +39,29 @@ class Invitation extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($invitation) {
-            do {
-                $reference = "INV-" . date('Ymd') . "-" . strtoupper(Str::random(6));
-            } while (DB::table('invitations')->where('reference', $reference)->exists());
 
-            $invitation->reference = $reference;
+        static::creating(function ($invitation) {
+            $ceremonieId = $invitation->ceremonie_id ?? null;
+            if ($ceremonieId) {
+                $ceremonie = Ceremonie::find($ceremonieId);
+                if ($ceremonie && $ceremonie->event && $ceremonie->event->status === 'termine') {
+                    throw ValidationException::withMessages([
+                        'ceremonie_id' => ["Impossible d'ajouter une invitation pour un événement terminé."],
+                    ]);
+                }
+            }
+        });
+
+        static::updating(function ($invitation) {
+            $ceremonieId = $invitation->ceremonie_id ?? $invitation->getOriginal('ceremonie_id');
+            if ($ceremonieId) {
+                $ceremonie = Ceremonie::find($ceremonieId);
+                if ($ceremonie && $ceremonie->event && $ceremonie->event->status === 'termine') {
+                    throw ValidationException::withMessages([
+                        'ceremonie_id' => ["Impossible de modifier une invitation liée à un événement terminé."],
+                    ]);
+                }
+            }
         });
     }
 	protected $guarded = [];

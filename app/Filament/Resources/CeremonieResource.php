@@ -128,13 +128,11 @@ class CeremonieResource extends Resource
                             ->schema([
                                 ColorPicker::make('hex')
                                     ->label('Couleur')
-                                    ->required()
                                     ->rule('regex:/^#[0-9A-Fa-f]{6}$/')
                                     ->dehydrateStateUsing(fn($state) => $state), // garde juste le code hex
                                 TextInput::make('name')
                                     ->label('Nom de la couleur')
                                     ->placeholder('Ex: Rouge Bordeaux')
-                                    ->required()
                                     ->maxLength(30),
 
                             ])->afterStateHydrated(function (Repeater $component, $state) {

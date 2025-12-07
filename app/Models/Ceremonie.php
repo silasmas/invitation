@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use App\Models\Groupe;
 use App\Models\Invitation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -68,4 +69,16 @@ public function getTimeAttribute()
 {
     return $this->date?->format('H\hi'); // ex: 14:30
 }
+
+protected static function booted()
+{
+    static::addGlobalScope('limitToUserEvent', function (Builder $query) {
+        if (auth()->check() && !auth()->user()->hasRole('super_admin')) {
+            $query->whereHas('event', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+    });
+}
+
 }

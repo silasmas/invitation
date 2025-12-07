@@ -9,6 +9,7 @@ use App\Helpers\MessageHelper;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Group;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -27,6 +28,7 @@ use App\Filament\Widgets\InvitationStats;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkActionGroup;
 use App\Filament\Resources\InvitationsResource\Pages;
 
@@ -449,4 +451,31 @@ class InvitationsResource extends Resource
             InvitationStats::class,
         ];
     }
+    //   public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()
+    //         ->whereHas('ceremonies', function (Builder $q) {
+    //             $q->where('status', '!=', 'termine');
+    //         });
+    // }
+
+    public static function getEloquentQuery(): Builder
+{
+    $query = parent::getEloquentQuery();
+    $user = Auth::user();
+
+    $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+        ? $user->hasRole('super_admin')
+        : optional($user->role)->name === 'super_admin');
+
+    if ($isSuperAdmin) {
+        return $query;
+    }
+
+    return $query->whereHas('ceremonies', function (Builder $q) {
+        $q->whereHas('event', function (Builder $q2) {
+            $q2->where('status', '!=', 'termine');
+        });
+    });
+}
 }
