@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
@@ -132,5 +133,27 @@ TextColumn::make('message')
             'create' => Pages\CreateMessage::route('/create'),
             'edit' => Pages\EditMessage::route('/{record}/edit'),
         ];
+    }
+
+     public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = Auth::user();
+
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+            ? $user->hasRole('super_admin')
+            : optional($user->role)->name === 'super_admin');
+
+        if ($isSuperAdmin) {
+            return $query;
+        }
+
+        // Adapter le nom de relation 'ceremonie' si votre Message utilise un autre nom
+        return $query->whereHas('ceremonie', function (Builder $q) use ($user) {
+            $q->whereHas('event', function (Builder $q2) use ($user) {
+                $q2->where('user_id', $user->id)
+                   ->where('status', '!=', 'termine');
+            });
+        });
     }
 }

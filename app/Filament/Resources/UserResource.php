@@ -74,7 +74,7 @@ class UserResource extends Resource implements HasShieldPermissions
                                 ->label('Mot de passe')
                                 ->password()
                                 ->required(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
-                                ->dehydrateStateUsing(fn($state) => filled($state) ? \Hash::make($state) : null)
+                                ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
                                 ->dehydrated(fn($state) => filled($state)) // Ne l'enregistre que si rempli
                                 ->confirmed()
                                 ->maxLength(255),

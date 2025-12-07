@@ -4,6 +4,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use App\Models\Groupe;
 use App\Models\Invitation;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -70,15 +71,39 @@ public function getTimeAttribute()
     return $this->date?->format('H\hi'); // ex: 14:30
 }
 
+// protected static function booted()
+// {
+//     $user = Auth::user();
+//     static::addGlobalScope('limitToUserEvent', function (Builder $query) {
+//         if (auth()->check() && !auth()->user()->hasRole('super_admin')) {
+//             $query->whereHas('event', function ($q) {
+//                 $q->where('user_id', auth()->id());
+//             });
+//         }
+//     });
+// }
 protected static function booted()
 {
     static::addGlobalScope('limitToUserEvent', function (Builder $query) {
-        if (auth()->check() && !auth()->user()->hasRole('super_admin')) {
-            $query->whereHas('event', function ($q) {
-                $q->where('user_id', auth()->id());
-            });
+        // si pas d'auth ou super_admin : ne pas restreindre
+        if (!Auth::check()) {
+            return;
         }
+
+        $user = Auth::user();
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+            ? $user->hasRole('super_admin')
+            : optional($user->role)->name === 'super_admin');
+
+        if ($isSuperAdmin) {
+            return; // super_admin voit tout
+        }
+
+        // sinon restreindre aux cérémonies dont l'event appartient à l'utilisateur ET est actif
+        $query->whereHas('event', function (Builder $q) use ($user) {
+            $q->where('user_id', $user->id)
+              ->where('status', '!=', 'termine');
+        });
     });
 }
-
 }
