@@ -8,6 +8,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Password;
@@ -160,10 +161,12 @@ class UserResource extends Resource implements HasShieldPermissions
 // }
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()?->can('view_any_user');
+        $user = Auth::user();
+        return $user?->can('view_any_user');
     }
     public static function canCreate(): bool
     {
-        return auth()->user()?->can('create_user');
+        $user = Auth::user();
+        return $user?->can('create_user');
     }
 }
