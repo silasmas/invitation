@@ -5,9 +5,30 @@ namespace App\Filament\Widgets;
 use App\Models\Invitation;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use App\Filament\Widgets\Concerns\FiltersByUser;
+
 
 class InvitationStats extends BaseWidget
 {
+    use FiltersByUser;
+
+    //    protected static string $view = 'filament.widgets.invitation-stats';
+
+    public function getData(): array
+    {
+        $query = Invitation::query();
+
+        // applyUserEventFilter attend une relation dot vers Event depuis Invitation :
+        // dans votre modèle Invitation la relation vers Ceremonie s'appelle 'ceremonies'
+        // et Ceremonie a la relation 'event' => dot = 'ceremonies.event'
+        $query = $this->applyUserEventFilter($query, 'ceremonies.event');
+
+        $count = $query->count();
+
+        return [
+            'count' => $count,
+        ];
+    }
     protected function getStats(): array
     {
         $total = Invitation::count();

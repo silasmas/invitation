@@ -6,12 +6,35 @@ use App\Models\Event;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use Carbon\Carbon;
+use App\Filament\Widgets\Concerns\FiltersByUser;
 
 class EventStats extends BaseWidget
 {
+    use FiltersByUser;
     protected static ?int $sort = 0; // Pour l'afficher après les stats globales
     protected ?string $heading = 'Événements';
 
+
+
+    public function getData(): array
+    {
+        $query = Event::query();
+
+        // Appliquer filtre : event directement lié => relation 'event' sur l'entité (ici Event lui-même)
+        // pour Event, on applique la condition user_id/status directement :
+        $user = auth()->user();
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole') ? $user->hasRole('super_admin') : optional($user->role)->name === 'super_admin');
+
+        if (! $isSuperAdmin) {
+            $query->where('user_id', $user->id)->where('status', '!=', 'termine');
+        }
+
+        $count = $query->count();
+
+        return [
+            'count' => $count,
+        ];
+    }
 protected ?string $description = 'Statistiques des événements';
     protected function getCards(): array
     {
