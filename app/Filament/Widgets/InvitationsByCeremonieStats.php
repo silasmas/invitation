@@ -37,7 +37,7 @@ class InvitationsByCeremonieStats extends BaseWidget
     protected function getStats(): array
     {
         $base = Ceremonie::query();
-        $filtered = $this->applyUserEventFilter(clone $base, 'ceremonies.event')->with('invitation')->get();
+        $filtered = $this->applyUserEventFilter(clone $base, 'invitation.event')->with('invitation')->get();
 
         $grouped = $filtered->groupBy(function ($inv) {
             return $inv->ceremonies->nom ?? 'Sans cérémonie';
