@@ -30,50 +30,74 @@ class InvitationStats extends BaseWidget
     //         'count' => $count,
     //     ];
     // }
-    protected function getStats(): array
+  protected function getStats(): array
     {
-        $total = Invitation::count();
-        $envoyees = Invitation::where('status', 'send')->count();
-        $acceptees = Invitation::where('status', 'accept')->count();
-        $refusees = Invitation::where('status', 'refuse')->count();
-        $fermer = Invitation::where('status', 'close')->count();
-        $enDure = Invitation::where('moyen', 'enDure')->count();
-        $virtuel = Invitation::where('moyen',"!=", 'enDure')->count();
+        // déterminer si super_admin
+        $user = auth()->user();
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+            ? $user->hasRole('super_admin')
+            : optional($user->role)->name === 'super_admin');
 
-        $enAttente = $total - $envoyees - $acceptees - $refusees-$fermer;
+        // base filtrée par événement utilisateur (pour les non super_admin)
+        $base = Invitation::query();
+        $filtered = $this->applyUserEventFilter(clone $base, 'ceremonies.event');
+
+        // total global pour super_admin, sinon total visible pour l'utilisateur
+        $total = $isSuperAdmin ? Invitation::count() : $filtered->count();
+
+        // calculs selon le scope approprié
+        if ($isSuperAdmin) {
+            $envoyees  = Invitation::where('status', 'send')->count();
+            $acceptees = Invitation::where('status', 'accept')->count();
+            $refusees  = Invitation::where('status', 'refuse')->count();
+            $fermer    = Invitation::where('status', 'close')->count();
+            $enDure    = Invitation::where('moyen', 'enDure')->count();
+            $virtuel   = Invitation::where('moyen', '!=', 'enDure')->count();
+        } else {
+            $envoyees  = (clone $filtered)->where('status', 'send')->count();
+            $acceptees = (clone $filtered)->where('status', 'accept')->count();
+            $refusees  = (clone $filtered)->where('status', 'refuse')->count();
+            $fermer    = (clone $filtered)->where('status', 'close')->count();
+            $enDure    = (clone $filtered)->where('moyen', 'enDure')->count();
+            $virtuel   = (clone $filtered)->where('moyen', '!=', 'enDure')->count();
+        }
+
+        $enAttente = $total - $envoyees - $acceptees - $refusees - $fermer;
 
         return [
+            Stat::make('📨 Total invitations', $total)
+                ->description($isSuperAdmin ? 'Toutes les invitations (admin)' : "Vos invitations")
+                ->color('primary'),
 
-                Stat::make('📨 Total invitations', $total)
-                    ->description('Toutes les invitations')
-                    ->color('primary'),
+            Stat::make('✉️ Envoyées', $envoyees)
+                ->description("Invitations envoyées")
+                ->color('info'),
 
-                Stat::make('✉️ Envoyées', $envoyees)
-                    ->description("Invitations envoyées")
-                    ->color('info'),
+            Stat::make('✅ Acceptées', $acceptees)
+                ->description("Réponses positives")
+                ->color('success'),
 
-                Stat::make('✅ Acceptées', $acceptees)
-                    ->description("Réponses positives")
-                    ->color('success'),
+            Stat::make('❌ Refusées', $refusees)
+                ->description("Réponses négatives")
+                ->color('danger'),
 
-                Stat::make('❌ Refusées', $refusees)
-                    ->description("Réponses négatives")
-                    ->color('danger'),
+            Stat::make('🕒 En attente', $enAttente)
+                ->description("Pas encore traitées")
+                ->color('gray'),
 
-                Stat::make('🕒 En attente', $enAttente)
-                    ->description("Pas encore traitées")
-                    ->color('gray'),
-                Stat::make('📨 Colturer', $fermer)
-                    ->description("Déjà cloturées")
-                    ->color('success'),
-                Stat::make('📨 En dure', $enDure)
-                    ->description("Invitation en dure")
-                    ->color('warning'),
-                Stat::make('Virtuel', $fermer)
-                    ->description("Invitation virtuel")
-                    ->color('info'),
-            ];
-        }
+            Stat::make('📨 Clôturées', $fermer)
+                ->description("Déjà clôturées")
+                ->color('success'),
+
+            Stat::make('📨 En dure', $enDure)
+                ->description("Invitation en dure")
+                ->color('warning'),
+
+            Stat::make('Virtuel', $virtuel)
+                ->description("Invitation virtuelle")
+                ->color('info'),
+        ];
+    }
         protected ?string $heading = '📨 Invitations';
 
         protected ?string $description = 'Statistiques sur les invitations ';
