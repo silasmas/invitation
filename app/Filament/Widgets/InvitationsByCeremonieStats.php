@@ -3,60 +3,31 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Ceremonie;
-use Illuminate\Support\Facades\Auth;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use App\Filament\Widgets\Concerns\FiltersByUser;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class InvitationsByCeremonieStats extends BaseWidget
 {
-     use FiltersByUser;
-    // protected function getStats(): array
-    // {
-    //      // On suppose que chaque cérémonie a une relation "invitations"
-    //      $ceremonies = Ceremonie::withCount([
-    //         'invitation as envoyees_count' => function ($query) {
-    //             $query->where('status', 'send');
-    //         }
-    //     ])->get();
-
-    //     $colors = ['blue', 'green', 'pink', 'purple', 'orange', 'red', 'teal', 'indigo', 'amber', 'gray'];
-
-    //     $cards = [];
-
-    //     foreach ($ceremonies as $ceremonie) {
-    //         $hash = crc32($ceremonie->nom);
-    //         $color = $colors[$hash % count($colors)];
-
-    //         $cards[] = Stat::make("📩 {$ceremonie->nom}", $ceremonie->envoyees_count)
-    //             ->description("Invitations envoyées")
-    //             ->color($color);
-    //     }
-
-    //     return $cards;
-    // }
     protected function getStats(): array
     {
-        $base = Ceremonie::query();
-        $filtered = $this->applyUserEventFilter(clone $base, 'invitation.ceremonies')->with('invitation')->get();
+         // On suppose que chaque cérémonie a une relation "invitations"
+         $ceremonies = Ceremonie::withCount([
+            'invitation as envoyees_count' => function ($query) {
+                $query->where('status', 'send');
+            }
+        ])->get();
 
-        $grouped = $filtered->groupBy(function ($inv) {
-            return $inv->ceremonies->nom ?? 'Sans cérémonie';
-        });
+        $colors = ['blue', 'green', 'pink', 'purple', 'orange', 'red', 'teal', 'indigo', 'amber', 'gray'];
 
         $cards = [];
-        foreach ($grouped as $ceremonyName => $items) {
-            $count = $items->count();
-            $label = mb_strimwidth($ceremonyName, 0, 28, '...');
-            $cards[] = Stat::make($label, $count)
-                ->description("Invitations: {$count}")
-                ->color('primary');
-        }
 
-        if (empty($cards)) {
-            $cards[] = Stat::make('Aucune cérémonie', 0)
-                ->description('Aucune invitation visible')
-                ->color('gray');
+        foreach ($ceremonies as $ceremonie) {
+            $hash = crc32($ceremonie->nom);
+            $color = $colors[$hash % count($colors)];
+
+            $cards[] = Stat::make("📩 {$ceremonie->nom}", $ceremonie->envoyees_count)
+                ->description("Invitations envoyées")
+                ->color($color);
         }
 
         return $cards;
@@ -65,16 +36,4 @@ class InvitationsByCeremonieStats extends BaseWidget
 
     protected ?string $description = 'Statistiques sur les invitations envoyées par cérémonie';
         protected static ?int $sort = 6; // pour l'afficher en haut
-
-         public static function shouldRegisterWidget(): bool
-    {
-        $user = Auth::user();
-        
-        // Exemple : masquer pour les utilisateurs non super_admin
-        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
-            ? $user->hasRole('super_admin')
-            : optional($user->role)->name === 'super_admin');
-
-        return $isSuperAdmin; // true = afficher, false = masquer
-    }
 }
