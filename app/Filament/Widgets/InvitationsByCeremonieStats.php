@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Ceremonie;
+use Illuminate\Support\Facades\Auth;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Filament\Widgets\Concerns\FiltersByUser;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
