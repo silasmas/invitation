@@ -15,14 +15,15 @@ class GuestRelationStats extends BaseWidget
     protected ?string $description = 'Répartition des invitations selon la relation de l\'invité';
     protected static ?int $sort = 4;
 
-    protected function getStats(): array
+      protected function getStats(): array
     {
         $base = Guest::query();
-        $filtered = $this->applyUserEventFilter(clone $base, 'ceremonies.event')->with('invitation')->get();
 
-        $grouped = $filtered->groupBy(function ($inv) {
-            $relation = optional($inv->guests)->relation ?? null;
-            return strtolower(trim($relation ?: 'autre'));
+        // CORRECTION : utiliser la relation depuis Guest vers Invitation puis Ceremonie -> Event
+        $filtered = $this->applyUserEventFilter(clone $base, 'invitation.ceremonies.event')->with('invitation')->get();
+
+        $grouped = $filtered->groupBy(function ($guest) {
+            return strtolower($guest->relation ?? 'autre');
         });
 
         $colors = ['red','pink','purple','indigo','blue','green','yellow','orange','teal','gray'];
@@ -33,14 +34,13 @@ class GuestRelationStats extends BaseWidget
             $color = $colors[$hash % count($colors)];
             $label = ucfirst($relation);
             $cards[] = Stat::make("👥 {$label}", $items->count())
-                ->description("Invitations: {$items->count()}")
+                ->description("Invités : " . $items->count())
                 ->color($color);
         }
 
-        // Si aucun résultat, retourner une carte générique
         if (empty($cards)) {
             $cards[] = Stat::make('Aucune relation', 0)
-                ->description('Aucune invitation visible')
+                ->description('Aucun invité visible')
                 ->color('gray');
         }
 
