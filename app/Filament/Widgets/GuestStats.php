@@ -15,7 +15,7 @@ class GuestStats extends BaseWidget
     protected ?string $description = 'Statistiques sur les invités';
     protected static ?int $sort    = 2; // pour l'afficher en haut
 
-    protected static string $view = 'filament.widgets.guest-stats';
+    // protected static string $view = 'filament.widgets.guest-stats';
 
     public function getData(): array
     {
