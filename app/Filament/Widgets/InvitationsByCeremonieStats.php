@@ -64,4 +64,16 @@ class InvitationsByCeremonieStats extends BaseWidget
 
     protected ?string $description = 'Statistiques sur les invitations envoyées par cérémonie';
         protected static ?int $sort = 6; // pour l'afficher en haut
+
+         public static function shouldRegisterWidget(): bool
+    {
+        $user = Auth::user();
+        
+        // Exemple : masquer pour les utilisateurs non super_admin
+        $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+            ? $user->hasRole('super_admin')
+            : optional($user->role)->name === 'super_admin');
+
+        return $isSuperAdmin; // true = afficher, false = masquer
+    }
 }
