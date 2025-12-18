@@ -288,8 +288,7 @@ class SendInvitations extends Page implements HasForms
                                     return Groupe::where('ceremonie_id', $cerId)->pluck('nom', 'id')->toArray();
                                 })
                                 ->searchable()
-                                ->columnSpan(4)
-                                ->required(),
+                                ->columnSpan(4),
 
                             Select::make('selectedMessageId')
                                 ->label('Choisir un message lié')
