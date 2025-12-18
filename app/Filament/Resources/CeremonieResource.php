@@ -135,31 +135,10 @@ class CeremonieResource extends Resource
                                     ->placeholder('Ex: Rouge Bordeaux')
                                     ->maxLength(30),
                             ])
-                            ->rule(function (\Closure $get) {
-                                $colors = collect($get('dressCode'))
-                                    ->pluck('hex')
-                                    ->filter()
-                                    ->values();
-
-                                // Aucune couleur → champ réellement optionnel, pas d’erreur
-                                if ($colors->isEmpty()) {
-                                    return null;
-                                }
-
-                                // Si l'utilisateur commence à remplir : 2 à 3 couleurs obligatoires
-                                if ($colors->count() < 2 || $colors->count() > 3) {
-                                    return 'Tu dois choisir entre 2 et 3 couleurs.';
-                                }
-
-                                // Couleurs doivent être uniques
-                                if ($colors->duplicates()->isNotEmpty()) {
-                                    return 'Les couleurs doivent être uniques.';
-                                }
-
-                                return null;
-                            })
+                            
                             ->afterStateHydrated(function (Repeater $component, $state) {
                                 // Transforme l'ancien format ['#hex', '#hex2'] → [['hex' => '#hex'], ...]
+                                // Aucun contrôle ni validation, juste compatibilité avec les anciennes données.
                                 if (is_array($state) && isset($state[0]) && is_string($state[0])) {
                                     $component->state(
                                         collect($state)
@@ -167,22 +146,6 @@ class CeremonieResource extends Resource
                                             ->toArray(),
                                     );
                                 }
-                            })
-                            ->beforeStateDehydrated(function ($state) {
-                                $colors = collect($state)
-                                    ->pluck('hex')
-                                    ->filter()
-                                    ->values();
-
-                                // Si aucune couleur choisie → on n'empêche pas l'enregistrement,
-                                // et on enregistre un tableau vide (champ vraiment optionnel)
-                                if ($colors->isEmpty()) {
-                                    return [];
-                                }
-
-                                // La validation est déjà gérée dans ->rule(),
-                                // ici on ne fait que normaliser les données pour le stockage.
-                                return $colors->toArray();
                             })
                             ->minItems(0)
                             ->maxItems(3)
