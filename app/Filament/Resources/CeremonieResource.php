@@ -129,60 +129,59 @@ class CeremonieResource extends Resource
                                 ColorPicker::make('hex')
                                     ->label('Couleur')
                                     ->rule('regex:/^#[0-9A-Fa-f]{6}$/')
-                                    ->dehydrateStateUsing(fn($state) => $state), // garde juste le code hex
+                                    ->dehydrateStateUsing(fn ($state) => $state), // garde juste le code hex
                                 TextInput::make('name')
                                     ->label('Nom de la couleur')
                                     ->placeholder('Ex: Rouge Bordeaux')
                                     ->maxLength(30),
+                            ])
+                            ->rule(function (\Closure $get) {
+                                $colors = collect($get('dressCode'))
+                                    ->pluck('hex')
+                                    ->filter()
+                                    ->values();
 
-                            ])->rule(function (\Closure $get) {
-                                $colors = collect($get('dressCode'))->pluck('hex')->filter()->values();
-                        
-                                // Si aucune couleur → pas d’erreur
+                                // Aucune couleur → champ réellement optionnel, pas d’erreur
                                 if ($colors->isEmpty()) {
                                     return null;
                                 }
-                        
-                                //if ($colors->count() < 2 || $colors->count() > 3) {
-                               //     return 'Tu dois choisir entre 2 et 3 couleurs.'; // s’affiche sous le repeater
-                                //}
-                        
+
+                                // Si l'utilisateur commence à remplir : 2 à 3 couleurs obligatoires
+                                if ($colors->count() < 2 || $colors->count() > 3) {
+                                    return 'Tu dois choisir entre 2 et 3 couleurs.';
+                                }
+
+                                // Couleurs doivent être uniques
                                 if ($colors->duplicates()->isNotEmpty()) {
                                     return 'Les couleurs doivent être uniques.';
                                 }
-                        
+
                                 return null;
                             })
                             ->afterStateHydrated(function (Repeater $component, $state) {
-                            if (is_array($state) && isset($state[0]) && is_string($state[0])) {
-                                // transforme ['#hex', '#hex2'] → [['hex' => '#hex'], ...]
-                                $component->state(
-                                    collect($state)
-                                        ->map(fn($color) => ['hex' => $color])
-                                        ->toArray()
-                                );
-                            }
-                        })->beforeStateDehydrated(function ($state) {
-                                $colors = collect($state)->pluck('hex')->filter()->values();
-                            
-                                // Si aucune couleur choisie → on n'empêche pas l'enregistrement
+                                // Transforme l'ancien format ['#hex', '#hex2'] → [['hex' => '#hex'], ...]
+                                if (is_array($state) && isset($state[0]) && is_string($state[0])) {
+                                    $component->state(
+                                        collect($state)
+                                            ->map(fn ($color) => ['hex' => $color])
+                                            ->toArray(),
+                                    );
+                                }
+                            })
+                            ->beforeStateDehydrated(function ($state) {
+                                $colors = collect($state)
+                                    ->pluck('hex')
+                                    ->filter()
+                                    ->values();
+
+                                // Si aucune couleur choisie → on n'empêche pas l'enregistrement,
+                                // et on enregistre un tableau vide (champ vraiment optionnel)
                                 if ($colors->isEmpty()) {
-                                    return []; // ou null selon ton besoin de stockage
+                                    return [];
                                 }
-                            
-                                // Si des couleurs sont présentes, on garde ta validation
-                                if ($colors->count() < 2 || $colors->count() > 3) {
-                                    throw \Illuminate\Validation\ValidationException::withMessages([
-                                        'dressCode' => 'Tu dois choisir entre 2 et 3 couleurs.',
-                                    ]);
-                                }
-                            
-                                if ($colors->duplicates()->isNotEmpty()) {
-                                    throw \Illuminate\Validation\ValidationException::withMessages([
-                                        'dressCode' => 'Les couleurs doivent être uniques.',
-                                    ]);
-                                }
-                            
+
+                                // La validation est déjà gérée dans ->rule(),
+                                // ici on ne fait que normaliser les données pour le stockage.
                                 return $colors->toArray();
                             })
                             ->minItems(0)
@@ -191,7 +190,8 @@ class CeremonieResource extends Resource
                             ->addActionLabel('Ajouter une couleur')
                             ->columnSpan(6)
                             ->dehydrated(true) // important pour que le champ soit envoyé
-                            ->statePath('dressCode')->validationAttribute('couleurs du dress code'),
+                            ->statePath('dressCode')
+                            ->validationAttribute('couleurs du dress code'),
                         View::make('filament.components.dress-code-preview')
                             ->label('Aperçu des couleurs sélectionnées')
                             ->columnSpan(6)
