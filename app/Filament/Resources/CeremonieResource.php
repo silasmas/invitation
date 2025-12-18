@@ -167,7 +167,6 @@ class CeremonieResource extends Resource
                             ->reorderable(false)
                             ->addActionLabel('Ajouter une couleur')
                             ->columnSpan(6)
-                            ->required()
                             ->dehydrated(true) // important pour que le champ soit envoyé
                             ->statePath('dressCode')->validationAttribute('couleurs du dress code'),
                         View::make('filament.components.dress-code-preview')
