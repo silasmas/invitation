@@ -243,18 +243,18 @@ class SendInvitations extends Page implements HasForms
                                         ->whereNotNull('phone')
                                         ->whereRaw("TRIM(phone) != ''");
 
+                                    // Pour les utilisateurs non super admin, filtrer par événement de l'invité
+                                    // (et non plus par invitation existante), afin d'inclure aussi les nouveaux invités
                                     if (! $isSuper) {
-                                        $q->whereHas('invitation', function (Builder $q2) use ($user) {
-                                            $q2->whereHas('ceremonies', function (Builder $q3) use ($user) {
-                                                $q3->whereHas('event', function (Builder $qe) use ($user) {
-                                                    $qe->where('user_id', $user->id)
-                                                       ->where('status', '!=', 'termine');
-                                                });
-                                            });
+                                        $q->whereHas('event', function (Builder $qe) use ($user) {
+                                            $qe->where('user_id', $user->id)
+                                               ->where('status', '!=', 'termine');
                                         });
                                     }
 
-                                    return $q->get()->mapWithKeys(fn($g) => [$g->id => "{$g->nom} ({$g->phone})"])->toArray();
+                                    return $q->get()
+                                        ->mapWithKeys(fn($g) => [$g->id => "{$g->nom} ({$g->phone})"])
+                                        ->toArray();
                                 })
                                 ->searchable()
                                 ->multiple()
@@ -345,16 +345,17 @@ class SendInvitations extends Page implements HasForms
                                 ->label('Invités (par Mail)')
                                 ->columnSpan(12)
                                 ->options(function () use ($isSuper, $user) {
-                                    $q = Guest::query()->whereNotNull('email')->where('email', '!=', '');
+                                    $q = Guest::query()
+                                        ->whereNotNull('email')
+                                        ->where('email', '!=', '');
+
                                     if (! $isSuper) {
-                                        $q->whereHas('invitation', function (Builder $q2) use ($user) {
-                                            $q2->whereHas('ceremonies', function (Builder $q3) use ($user) {
-                                                $q3->whereHas('event', function (Builder $qe) use ($user) {
-                                                    $qe->where('user_id', $user->id)->where('status', '!=', 'termine');
-                                                });
-                                            });
+                                        $q->whereHas('event', function (Builder $qe) use ($user) {
+                                            $qe->where('user_id', $user->id)
+                                               ->where('status', '!=', 'termine');
                                         });
                                     }
+
                                     return $q->pluck('nom', 'id')->toArray();
                                 })
                                 ->searchable()
@@ -412,15 +413,14 @@ class SendInvitations extends Page implements HasForms
                                 ->columnSpan(12)
                                 ->options(function () use ($isSuper, $user) {
                                     $q = Guest::query();
+
                                     if (! $isSuper) {
-                                        $q->whereHas('invitation', function (Builder $q2) use ($user) {
-                                            $q2->whereHas('ceremonies', function (Builder $q3) use ($user) {
-                                                $q3->whereHas('event', function (Builder $qe) use ($user) {
-                                                    $qe->where('user_id', $user->id)->where('status', '!=', 'termine');
-                                                });
-                                            });
+                                        $q->whereHas('event', function (Builder $qe) use ($user) {
+                                            $qe->where('user_id', $user->id)
+                                               ->where('status', '!=', 'termine');
                                         });
                                     }
+
                                     return $q->pluck('nom', 'id')->toArray();
                                 })
                                 ->searchable()
