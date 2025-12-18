@@ -144,25 +144,30 @@ class CeremonieResource extends Resource
                                         ->toArray()
                                 );
                             }
-                        })
-                            ->beforeStateDehydrated(function ($state) {
+                        })->beforeStateDehydrated(function ($state) {
                                 $colors = collect($state)->pluck('hex')->filter()->values();
-
+                            
+                                // Si aucune couleur choisie → on n'empêche pas l'enregistrement
+                                if ($colors->isEmpty()) {
+                                    return []; // ou null selon ton besoin de stockage
+                                }
+                            
+                                // Si des couleurs sont présentes, on garde ta validation
                                 if ($colors->count() < 2 || $colors->count() > 3) {
                                     throw \Illuminate\Validation\ValidationException::withMessages([
                                         'dressCode' => 'Tu dois choisir entre 2 et 3 couleurs.',
                                     ]);
                                 }
-
+                            
                                 if ($colors->duplicates()->isNotEmpty()) {
                                     throw \Illuminate\Validation\ValidationException::withMessages([
                                         'dressCode' => 'Les couleurs doivent être uniques.',
                                     ]);
                                 }
-
-                                return $colors->toArray(); // propre, hex only
+                            
+                                return $colors->toArray();
                             })
-                            ->minItems(1)
+                            ->minItems(0)
                             ->maxItems(3)
                             ->reorderable(false)
                             ->addActionLabel('Ajouter une couleur')
