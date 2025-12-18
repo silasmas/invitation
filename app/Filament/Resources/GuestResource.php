@@ -305,14 +305,18 @@ class GuestResource extends Resource
             return $query;
         }
 
-        // Pour les utilisateurs normaux : afficher uniquement les invités
-        // liés à des cérémonies avec un événement actif (status != 'termine')
-        return $query->whereHas('invitation', function (Builder $q) {
-            $q->whereHas('ceremonies', function (Builder $q2) {
-                $q2->whereHas('event', function (Builder $q3) {
-                    $q3->where('status', '!=', 'termine');
+        // Pour les utilisateurs normaux :
+        // - afficher les invités liés à des cérémonies avec un événement actif (status != 'termine')
+        // - ET ne pas exclure les invités qui n'ont pas encore d'invitation (cas lors de la création)
+        return $query->where(function (Builder $q) {
+            $q->doesntHave('invitation')
+                ->orWhereHas('invitation', function (Builder $qInv) {
+                    $qInv->whereHas('ceremonies', function (Builder $qCer) {
+                        $qCer->whereHas('event', function (Builder $qEvt) {
+                            $qEvt->where('status', '!=', 'termine');
+                        });
+                    });
                 });
-            });
         });
     }
 }
