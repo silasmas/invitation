@@ -135,7 +135,25 @@ class CeremonieResource extends Resource
                                     ->placeholder('Ex: Rouge Bordeaux')
                                     ->maxLength(30),
 
-                            ])->afterStateHydrated(function (Repeater $component, $state) {
+                            ])->rule(function (\Closure $get) {
+                                $colors = collect($get('dressCode'))->pluck('hex')->filter()->values();
+                        
+                                // Si aucune couleur → pas d’erreur
+                                if ($colors->isEmpty()) {
+                                    return null;
+                                }
+                        
+                                //if ($colors->count() < 2 || $colors->count() > 3) {
+                               //     return 'Tu dois choisir entre 2 et 3 couleurs.'; // s’affiche sous le repeater
+                                //}
+                        
+                                if ($colors->duplicates()->isNotEmpty()) {
+                                    return 'Les couleurs doivent être uniques.';
+                                }
+                        
+                                return null;
+                            })
+                            ->afterStateHydrated(function (Repeater $component, $state) {
                             if (is_array($state) && isset($state[0]) && is_string($state[0])) {
                                 // transforme ['#hex', '#hex2'] → [['hex' => '#hex'], ...]
                                 $component->state(
