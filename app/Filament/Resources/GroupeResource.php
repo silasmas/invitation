@@ -8,6 +8,7 @@ use App\Models\Groupe;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Imports\GroupeImpor;
+use App\Models\Ceremonie;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\View;
 use Filament\Tables\Actions\Action;
@@ -106,6 +107,28 @@ class GroupeResource extends Resource
                     ->icon('heroicon-m-arrow-up-tray')
                     ->form([
                         View::make('filament.forms.download-template2'),
+                        Select::make('ceremonie_id')
+                            ->label('Cérémonie liée aux groupes importés')
+                            ->required()
+                            ->searchable()
+                            ->options(function () {
+                                $user = Auth::user();
+
+                                $isSuperAdmin = $user && (method_exists($user, 'hasRole')
+                                    ? $user->hasRole('super_admin')
+                                    : optional($user->role)->name === 'super_admin');
+
+                                $q = Ceremonie::query()->with('event');
+
+                                if (! $isSuperAdmin) {
+                                    $q->whereHas('event', function (Builder $qe) use ($user) {
+                                        $qe->where('user_id', $user->id)
+                                           ->where('status', '!=', 'termine');
+                                    });
+                                }
+
+                                return $q->pluck('nom', 'id')->toArray();
+                            }),
                         FileUpload::make('file')
                             ->label('Fichier Excel')
                             ->disk('local')                // Utilisation du stockage local (dans storage/app/)
@@ -116,13 +139,12 @@ class GroupeResource extends Resource
                                 'text/csv',                                                          // .csv
                             ])
                             ->required(),
-
                     ])
                     ->action(function (array $data) {
                         Log::info('Début de l’importation'); // Vérifier si l'action se déclenche
 
-                        // 🔹 Récupérer l'ID de l'événement depuis le formulaire
-                        $eventId = $data['event_id'] ?? null;
+                        // 🔹 Récupérer l'ID de la cérémonie depuis le formulaire
+                        $ceremonieId = $data['ceremonie_id'] ?? null;
                         $fileInput = $data['file'] ?? null;
                         Log::info('Fichier reçu : ' . print_r($fileInput, true));
                                                       // Correction du chemin du fichier
@@ -147,7 +169,7 @@ class GroupeResource extends Resource
                         // 🔹 Capturer les erreurs avec try-catch
                         try {
                             // 🔹 Création d'une instance de l'import pour capturer les erreurs
-                            $import = new GroupeImpor($eventId);
+                            $import = new GroupeImpor($ceremonieId);
 
                             // 🔹 Récupération des erreurs après l'importation
                             Excel::import($import, $filePath);

@@ -26,34 +26,33 @@ class GroupeImpor implements ToModel, WithHeadingRow, WithValidation, SkipsOnFai
 
     public function model(array $row)
     {
-        // Vérifier l'existence d'une boisson avec le même nom
-        if (Groupe::where('nom', $row['nom'])->exists()) {
+        // Vérifier l'existence d'un groupe avec le même nom pour cette cérémonie
+        if (Groupe::where('ceremonie_id', $this->ceremonieId)
+            ->where('nom', $row['nom'])
+            ->exists()) {
             $this->skippedDuplicates[] = $row;
             return null; // Ignorer la ligne
         }
         return new Groupe([
-            'nom'     => $row['nom'],  // Correspond au nom de la colonne dans Excel
-            'description'    => $row['description'],
+            'nom'          => $row['nom'],  // Correspond au nom de la colonne dans Excel
+            'description'  => $row['description'] ?? null,
+            'ceremonie_id' => $this->ceremonieId,
         ]);
     }
-// 🔹 Ajout de messages d'erreur personnalisés
-public function customValidationMessages()
-{
-    return [
-        '*.nom.required' => 'Le champ "Nom" est obligatoire.',
-        '*.nom.string' => 'Le champ "Nom" doit être une chaîne de caractères.',
-        '*.nom.max' => 'Le champ "Nom" ne doit pas dépasser 255 caractères.',
-
-        '*.ceremonieId.required' => 'Le champ "ceremonie" est obligatoire.',
-        '*.ceremonieId.integer' => 'Le champ "ceremonie" doit être un entier',
-    ];
-}
+    // 🔹 Messages d'erreur personnalisés
+    public function customValidationMessages()
+    {
+        return [
+            '*.nom.required' => 'Le champ "Nom" est obligatoire.',
+            '*.nom.string'   => 'Le champ "Nom" doit être une chaîne de caractères.',
+            '*.nom.max'      => 'Le champ "Nom" ne doit pas dépasser 255 caractères.',
+        ];
+    }
 
     public function rules(): array
     {
         return [
             '*.nom' => 'required|string|max:255',
-           '*.ceremonieId' => 'nullable|integer|exists:ceremonies,id',
             '*.description' => 'nullable|string|max:255',
         ];
     }
